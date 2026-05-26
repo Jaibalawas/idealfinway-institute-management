@@ -273,7 +273,7 @@ tbody tr:hover td{background:var(--bg3);}
 <div id="setup-banner">
   <i class="fas fa-database" style="color:#fff;font-size:16px;"></i>
   <span style="color:#fff;">⚙️ <b>Pehli baar setup:</b> Supabase database connect karein — </span>
-  <a onclick="openModal('modal-config')">Yahan click karein Setup ke liye →</a>
+  <a onclick="openConfigModal()">Yahan click karein Setup ke liye →</a>
   <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.6);">Iske bina data browser band karne pe chala jaega</span>
 </div>
 
@@ -814,7 +814,7 @@ create policy "allow all" on expenses for all using(true) with check(true);
             </div>
             <div class="card">
               <div class="ch"><div><div class="ct"><i class="fas fa-database" style="color:var(--accent2);"></i> Database Config</div><div class="cs" id="db-status-text">Status check ho raha hai...</div></div><span class="badge" id="db-status-badge">Checking</span></div>
-              <button class="btn btn-sm" onclick="openModal('modal-config')" style="width:100%;justify-content:center;"><i class="fas fa-plug"></i>Supabase Reconnect / Change</button>
+              <button class="btn btn-sm" onclick="openConfigModal()" style="width:100%;justify-content:center;"><i class="fas fa-plug"></i>Supabase Reconnect / Change</button>
             </div>
           </div>
         </div>
@@ -883,22 +883,39 @@ async function saveSupabaseConfig() {
   const url = document.getElementById('cfg-url').value.trim().replace(/\/$/, '');
   const key = document.getElementById('cfg-key').value.trim();
   if (!url || !key) { showToast('URL aur Key dono required hain!', true); return; }
+
+  // Test connection
   SUPABASE_URL = url;
   SUPABASE_KEY = key;
   const test = await sbFetch('users', 'GET', null, '?select=id&limit=1');
+
   if (test !== null) {
+    // Save permanently
     localStorage.setItem('sb_url', url);
     localStorage.setItem('sb_key', key);
     supabaseReady = true;
     closeModal('modal-config');
-    document.getElementById('setup-banner').classList.add('hidden');
-    document.getElementById('db-status-badge').className = 'badge bg';
-    document.getElementById('db-status-badge').textContent = 'Connected ✓';
-    document.getElementById('db-status-text').textContent = 'Supabase connected — data cloud pe save ho raha hai';
-    showToast('✅ Supabase connected! Data ab permanently save hoga.');
-    loadAllData();
+
+    // Hide setup banner
+    const banner = document.getElementById('setup-banner');
+    if (banner) banner.classList.add('hidden');
+
+    // Update status badge in settings
+    const badge = document.getElementById('db-status-badge');
+    const text = document.getElementById('db-status-text');
+    if (badge) { badge.className = 'badge bg'; badge.textContent = 'Connected ✓'; }
+    if (text) text.textContent = 'Cloud database — data permanent hai';
+
+    showToast('✅ Supabase connected! Data reload ho raha hai...');
+
+    // Reload all data from cloud
+    await loadAllData();
+    showToast('✅ Connected! Sab data load ho gaya.');
   } else {
-    showToast('❌ Connection fail! URL aur Key check karein.', true);
+    // Reset on failure
+    SUPABASE_URL = localStorage.getItem('sb_url') || '';
+    SUPABASE_KEY = localStorage.getItem('sb_key') || '';
+    showToast('❌ Connection fail! URL aur Anon Key check karein.', true);
   }
 }
 
@@ -1973,7 +1990,18 @@ function showPage(id, el) {
   const info=pgTitles[id]||[id,''];
   document.getElementById('tp-title').textContent=info[0];
   document.getElementById('tp-sub').textContent=info[1];
-  if(id==='settings') loadSettings();
+  if(id==='settings') { loadSettings(); }
+}
+
+function openConfigModal() {
+  // Pre-fill existing saved values
+  const savedUrl = localStorage.getItem('sb_url')||'';
+  const savedKey = localStorage.getItem('sb_key')||'';
+  const urlEl = document.getElementById('cfg-url');
+  const keyEl = document.getElementById('cfg-key');
+  if (urlEl) urlEl.value = savedUrl;
+  if (keyEl) keyEl.value = savedKey;
+  openModal('modal-config');
 }
 
 // Set today's date in fee form
