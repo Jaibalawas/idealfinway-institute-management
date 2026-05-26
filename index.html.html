@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Idealfinway — Institute Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --bg:#0a0f1a;--bg2:#111827;--bg3:#1a2332;--card:#131c2e;--card2:#1e2d42;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#f0f4ff;--text2:#8b9bbf;--text3:#4a5a7a;
+  --accent:#3b82f6;--accent2:#60a5fa;--accent3:#1d4ed8;
+  --green:#10b981;--green-bg:rgba(16,185,129,0.12);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.12);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.12);
+  --purple:#8b5cf6;--purple-bg:rgba(139,92,246,0.12);
+  --teal:#14b8a6;--teal-bg:rgba(20,184,166,0.12);
+  --r:12px;--rs:8px;
+}
+/* LIGHT MODE */
+body.light{
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e8eef5;--card:#ffffff;--card2:#f0f4f8;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
+  --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --accent:#2563eb;--accent2:#1d4ed8;--accent3:#1e40af;
+  --green:#059669;--green-bg:rgba(5,150,105,0.1);
+  --amber:#d97706;--amber-bg:rgba(217,119,6,0.1);
+  --red:#dc2626;--red-bg:rgba(220,38,38,0.1);
+  --purple:#7c3aed;--purple-bg:rgba(124,58,237,0.1);
+  --teal:#0d9488;--teal-bg:rgba(13,148,136,0.1);
+}
+/* SMOOTH TRANSITION */
+*,body,body.light{transition:background-color 0.25s ease,border-color 0.25s ease,color 0.2s ease;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+/* THEME TOGGLE BUTTON */
+.theme-toggle{
+  width:38px;height:38px;border-radius:var(--rs);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:1px solid var(--border2);
+  background:var(--card2);color:var(--text2);
+  font-size:16px;transition:all 0.2s;flex-shrink:0;
+}
+.theme-toggle:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent);}
+body.light .theme-toggle{background:var(--card2);color:var(--amber);}
+body.light .theme-toggle:hover{background:var(--amber-bg);border-color:var(--amber);}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+body.light ::-webkit-scrollbar-thumb{background:#cbd5e1;}
+body.light .login-box{box-shadow:0 4px 24px rgba(0,0,0,0.08);}
+body.light .card{box-shadow:0 1px 4px rgba(0,0,0,0.04);}
+body.light .sidebar{box-shadow:2px 0 8px rgba(0,0,0,0.06);}
+body.light .topbar{box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+body.light .fg input,body.light .fg select,body.light .fg textarea,body.light .sb input,.light .search-bar{background:#f8fafc;}
+
+/* SETUP BANNER */
+#setup-banner{background:linear-gradient(135deg,#1d4ed8,#7c3aed);padding:14px 24px;display:flex;align-items:center;gap:12px;font-size:13px;position:fixed;top:0;left:0;right:0;z-index:99999;}
+#setup-banner.hidden{display:none;}
+#setup-banner a{color:#fff;font-weight:700;text-decoration:underline;cursor:pointer;}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;z-index:9998;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+#login-screen.hidden{display:none;}
+.login-box{width:100%;max-width:420px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px 36px;text-align:center;}
+.login-logo{width:56px;height:56px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;}
+.login-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;}
+.login-sub{font-size:13px;color:var(--text3);margin-bottom:24px;}
+.lg{text-align:left;margin-bottom:14px;}
+.lg label{display:block;font-size:12px;color:var(--text2);font-weight:500;margin-bottom:6px;}
+.lg input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:11px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;}
+.lg input:focus{border-color:var(--accent);}
+.login-err{background:var(--red-bg);border:1px solid rgba(239,68,68,0.3);color:var(--red);font-size:12px;padding:10px 14px;border-radius:var(--rs);margin-bottom:14px;display:none;}
+.login-err.show{display:block;}
+.login-btn{width:100%;background:var(--accent);border:none;border-radius:var(--rs);padding:12px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;margin-top:4px;}
+.login-btn:hover{background:var(--accent3);}
+.login-hint{margin-top:18px;font-size:11px;color:var(--text3);background:var(--bg3);border-radius:var(--rs);padding:12px 14px;text-align:left;line-height:1.8;}
+
+/* APP LAYOUT */
+.app{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.logo-area{padding:22px 18px 18px;border-bottom:1px solid var(--border);}
+.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:16px;}
+.logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
+.logo-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.nav-sec{padding:14px 18px 4px;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;color:var(--text2);font-size:13px;transition:all 0.15s;border-left:3px solid transparent;}
+.ni:hover{background:var(--bg3);color:var(--text);}
+.ni.active{background:rgba(59,130,246,0.1);color:var(--accent2);border-left-color:var(--accent);font-weight:500;}
+.ni i{width:16px;text-align:center;font-size:14px;}
+.nbadge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:600;padding:1px 6px;border-radius:20px;}
+.nbadge.a{background:var(--amber);}
+.sb-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);}
+.user-pill{display:flex;align-items:center;gap:10px;background:var(--bg3);border-radius:var(--rs);padding:10px 12px;}
+.uav{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.uname{font-size:12px;font-weight:500;}
+.urole{font-size:10px;color:var(--text3);}
+.logout-btn{width:100%;margin-top:8px;background:var(--red-bg);border:1px solid rgba(239,68,68,0.2);border-radius:var(--rs);padding:8px;color:var(--red);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.topbar-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
+.topbar-sub{font-size:12px;color:var(--text3);margin-top:1px;}
+.topbar-actions{display:flex;gap:8px;align-items:center;}
+.content{padding:22px 26px;flex:1;}
+.page{display:none;}
+.page.active{display:block;animation:fi 0.2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.sc:hover{border-color:var(--border2);}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sc.blue::before{background:var(--accent);}
+.sc.green::before{background:var(--green);}
+.sc.amber::before{background:var(--amber);}
+.sc.red::before{background:var(--red);}
+.sc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px;}
+.sc-icon.blue{background:rgba(59,130,246,0.15);color:var(--accent2);}
+.sc-icon.green{background:var(--green-bg);color:var(--green);}
+.sc-icon.amber{background:var(--amber-bg);color:var(--amber);}
+.sc-icon.red{background:var(--red-bg);color:var(--red);}
+.sc-label{font-size:11px;color:var(--text2);margin-bottom:5px;}
+.sc-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;}
+.sc-ch{font-size:11px;color:var(--text3);margin-top:4px;}
+.sc-ch.up{color:var(--green);}
+.sc-ch.warn{color:var(--amber);}
+
+/* GRID */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px;}
+.card:hover{border-color:var(--border2);}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.ct{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;}
+.cs{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{text-align:left;color:var(--text3);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;padding:0 12px 10px;border-bottom:1px solid var(--border);}
+tbody td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--bg3);}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+.bg{background:var(--green-bg);color:var(--green);}
+.bb{background:rgba(59,130,246,0.15);color:var(--accent2);}
+.ba{background:var(--amber-bg);color:var(--amber);}
+.br{background:var(--red-bg);color:var(--red);}
+.bp{background:var(--purple-bg);color:var(--purple);}
+.bt{background:var(--teal-bg);color:var(--teal);}
+.bgr{background:rgba(255,255,255,0.05);color:var(--text2);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--card2);color:var(--text);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.btn:hover{background:var(--bg3);border-color:var(--accent);color:var(--accent2);}
+.btn-p{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn-p:hover{background:var(--accent3);border-color:var(--accent3);color:#fff;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-g{background:var(--green-bg);border-color:rgba(16,185,129,0.2);color:var(--green);}
+
+/* AVATAR */
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.av-b{background:rgba(59,130,246,0.2);color:var(--accent2);}
+.av-g{background:var(--green-bg);color:var(--green);}
+.av-a{background:var(--amber-bg);color:var(--amber);}
+.av-p{background:var(--purple-bg);color:var(--purple);}
+.av-t{background:var(--teal-bg);color:var(--teal);}
+.av-r{background:var(--red-bg);color:var(--red);}
+
+/* FORM */
+.ir{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:12px;color:var(--text2);font-weight:500;}
+.fg input,.fg select,.fg textarea{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;transition:border-color 0.2s;outline:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);}
+.fg select option{background:var(--bg2);}
+.sb{position:relative;flex:1;}
+.sb i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;}
+.sb input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px 9px 34px;color:var(--text);font-size:13px;outline:none;transition:border-color 0.2s;font-family:'DM Sans',sans-serif;}
+.sb input:focus{border-color:var(--accent);}
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.ph{margin-bottom:20px;}
+.ph-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.ph-sub{font-size:13px;color:var(--text3);margin-top:3px;}
+.ib{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:12px;transition:all 0.15s;}
+.ib:hover{background:var(--bg3);color:var(--accent2);border-color:var(--accent);}
+.ib.wh:hover{color:var(--green);border-color:var(--green);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:26px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;animation:fi 0.2s ease;}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--text3);margin-bottom:20px;}
+.modal-footer{display:flex;gap:8px;margin-top:18px;justify-content:flex-end;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--card);border:1px solid var(--green);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--green);z-index:9000;display:none;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.toast.show{display:flex;animation:fi 0.3s ease;}
+.toast.err{border-color:var(--red);color:var(--red);}
+
+/* PIPELINE */
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
+.pc{background:var(--bg3);border-radius:var(--r);padding:12px;border:1px solid var(--border);min-height:160px;}
+.pc-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.pc-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text2);}
+.pc-cnt{font-size:10px;font-weight:700;background:var(--border);padding:2px 6px;border-radius:10px;color:var(--text3);}
+.pk{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px;margin-bottom:7px;cursor:pointer;transition:all 0.15s;}
+.pk:hover{border-color:var(--accent);transform:translateY(-1px);}
+.pk-name{font-size:13px;font-weight:500;color:var(--text);}
+.pk-info{font-size:11px;color:var(--text3);margin-top:3px;}
+
+/* ALERT LIST */
+.al{display:flex;flex-direction:column;}
+.ai{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);}
+.ai:last-child{border-bottom:none;}
+.ai-info{flex:1;min-width:0;}
+.ai-name{font-size:13px;font-weight:500;color:var(--text);}
+.ai-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+
+/* PROGRESS */
+.prog{height:5px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:6px;}
+.prog-f{height:100%;border-radius:10px;}
+
+/* TAG */
+.tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;text-transform:uppercase;}
+.t-hot{background:var(--red-bg);color:var(--red);}
+.t-warm{background:var(--amber-bg);color:var(--amber);}
+.t-cold{background:rgba(255,255,255,0.05);color:var(--text3);}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:50px 20px;color:var(--text3);}
+.empty i{font-size:40px;margin-bottom:12px;display:block;opacity:0.3;}
+.empty p{font-size:14px;}
+
+/* SWITCH */
+.sw-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);}
+.sw-row:last-child{border-bottom:none;}
+.sw-t{font-size:13px;font-weight:500;color:var(--text);}
+.sw-s{font-size:11px;color:var(--text3);margin-top:2px;}
+.toggle{width:36px;height:20px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+.toggle.on{background:var(--green);}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform 0.2s;}
+.toggle.on::after{transform:translateX(16px);}
+
+/* LOADING SPINNER */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+.info-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+.ii{font-size:12px;color:var(--text3);}
+.ii b{color:var(--text2);font-weight:500;}
+
+/* SUPABASE CONFIG MODAL */
+.config-step{background:var(--bg3);border-radius:var(--rs);padding:14px;margin-bottom:12px;border-left:3px solid var(--accent);}
+.config-step-num{font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:4px;text-transform:uppercase;}
+.config-step-text{font-size:13px;color:var(--text2);line-height:1.6;}
+.config-step code{background:var(--bg);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px;color:var(--green);}
+</style>
+</head>
+<body>
+
+<!-- SETUP BANNER -->
+<div id="setup-banner">
+  <i class="fas fa-database" style="color:#fff;font-size:16px;"></i>
+  <span style="color:#fff;">⚙️ <b>Pehli baar setup:</b> Supabase database connect karein — </span>
+  <a onclick="openModal('modal-config')">Yahan click karein Setup ke liye →</a>
+  <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.6);">Iske bina data browser band karne pe chala jaega</span>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo"><i class="fas fa-chart-line" style="color:#fff"></i></div>
+    <div class="login-title">Idealfinway</div>
+    <div class="login-sub">Institute Management System</div>
+    <div class="login-err" id="login-err"><i class="fas fa-exclamation-circle"></i> <span id="login-err-msg">Galat username ya password</span></div>
+    <div class="lg"><label>Username</label><input type="text" id="lu" placeholder="username" autocomplete="username"/></div>
+    <div class="lg"><label>Password</label><input type="password" id="lp" placeholder="password" autocomplete="current-password"/></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Login karein</button>
+    <div class="login-hint">
+      <b style="color:var(--text2);">Default Credentials:</b><br>
+      👑 Admin → <b>admin</b> / <b>stockedu@2026</b><br>
+      📋 Counsellor → <b>raj</b> / <b>raj@123</b><br>
+      🖥️ Reception → <b>neeraj</b> / <b>neeraj@123</b>
+    </div>
+  </div>
+</div>
+
+<!-- SUPABASE CONFIG MODAL -->
+<div class="modal-overlay" id="modal-config">
+  <div class="modal" style="max-width:620px;">
+    <div class="modal-title">🗄️ Supabase Database Setup</div>
+    <div class="modal-sub">Free database — data permanently save hoga, kahin se bhi access milega</div>
+
+    <div class="config-step">
+      <div class="config-step-num">Step 1 — Supabase Account</div>
+      <div class="config-step-text">
+        <a href="https://supabase.com" target="_blank" style="color:var(--accent2)">supabase.com</a> pe jayen → <b>Start your project</b> → GitHub se free signup karein
+      </div>
+    </div>
+    <div class="config-step">
+      <div class="config-step-num">Step 2 — New Project Banayein</div>
+      <div class="config-step-text">
+        Dashboard mein <b>New Project</b> → Name: <code>stockedu</code> → Region: <b>Southeast Asia (Singapore)</b> → Strong password set karein → Create
+      </div>
+    </div>
+    <div class="config-step">
+      <div class="config-step-num">Step 3 — Tables Banayein (SQL Editor)</div>
+      <div class="config-step-text">
+        Left menu → <b>SQL Editor</b> → <b>New Query</b> → Neeche diya SQL paste karein → <b>Run</b> dabayein:
+        <div style="background:var(--bg);border-radius:6px;padding:10px;margin-top:8px;font-family:monospace;font-size:11px;color:var(--green);line-height:1.7;overflow-x:auto;">
+create table users(id bigint primary key generated always as identity,name text,username text unique,password text,role text);<br>
+insert into users(name,username,password,role)values('Admin','admin','stockedu@2026','Admin'),('Raj','raj','raj@123','Counsellor'),('Neeraj','neeraj','neeraj@123','Receptionist');<br>
+create table students(id bigint primary key generated always as identity,student_id text unique,name text,mobile text,email text,whatsapp text,gender text,dob text,course text,batch text,trading_bg text,profession text,guardian text,city text,status text default 'Active',fees_status text default 'Pending',notes text,joined_date text,created_at timestamptz default now());<br>
+create table leads(id bigint primary key generated always as identity,name text,mobile text,email text,course_interest text,source text,trading_exp text,budget text,stage text default 'New',counsellor text,followup_date text,notes text,created_at timestamptz default now());<br>
+create table fees(id bigint primary key generated always as identity,receipt_no text,student_name text,student_id_ref text,course text,amount numeric,discount numeric default 0,payment_mode text,installment text,transaction_ref text,collected_by text,remarks text,payment_date text,created_at timestamptz default now());<br>
+create table expenses(id bigint primary key generated always as identity,category text,amount numeric,description text,payment_mode text,expense_date text,created_at timestamptz default now());<br>
+alter table users enable row level security;<br>
+alter table students enable row level security;<br>
+alter table leads enable row level security;<br>
+alter table fees enable row level security;<br>
+alter table expenses enable row level security;<br>
+create policy "allow all" on users for all using(true) with check(true);<br>
+create policy "allow all" on students for all using(true) with check(true);<br>
+create policy "allow all" on leads for all using(true) with check(true);<br>
+create policy "allow all" on fees for all using(true) with check(true);<br>
+create policy "allow all" on expenses for all using(true) with check(true);
+        </div>
+      </div>
+    </div>
+    <div class="config-step">
+      <div class="config-step-num">Step 4 — API Keys Copy Karein</div>
+      <div class="config-step-text">
+        Left menu → <b>Project Settings</b> → <b>API</b> → <br>
+        • <b>Project URL</b> copy karein (https://xxxx.supabase.co)<br>
+        • <b>anon public</b> key copy karein (neeche paste karein)
+      </div>
+    </div>
+
+    <div class="ir" style="margin-top:16px;">
+      <div class="fg"><label>Supabase Project URL</label><input id="cfg-url" placeholder="https://xxxxxxxxxxxx.supabase.co"/></div>
+      <div class="fg"><label>Supabase Anon Key</label><input id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIs..."/></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-config')">Baad mein karein</button>
+      <button class="btn btn-p" onclick="saveSupabaseConfig()"><i class="fas fa-plug"></i> Connect & Test karein</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD STUDENT MODAL -->
+<div class="modal-overlay" id="modal-student">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-user-plus" style="color:var(--accent2)"></i> Naya Student Add Karein</div>
+    <div class="modal-sub">Student ki poori details fill karein</div>
+    <div class="ir">
+      <div class="fg"><label>Pura Naam *</label><input id="s-name" placeholder="Student ka naam"/></div>
+      <div class="fg"><label>Mobile *</label><input id="s-mobile" placeholder="10-digit mobile"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Email</label><input id="s-email" placeholder="email@example.com"/></div>
+      <div class="fg"><label>WhatsApp Number</label><input id="s-whatsapp" placeholder="Mobile se alag hai?"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Course *</label><select id="s-course"><option value="">-- Select --</option><option>Technical Analysis</option></select></div>
+      <div class="fg"><label>Batch</label><select id="s-batch"><option value="">-- Select --</option><option>Technical Analysis Batch</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Trading Background</label><select id="s-tbg"><option>Beginner</option><option>Intermediate</option><option>Advanced Trader</option></select></div>
+      <div class="fg"><label>Profession</label><select id="s-prof"><option>Job (Salaried)</option><option>Business Owner</option><option>Student</option><option>Trader</option><option>Housewife</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Guardian Name</label><input id="s-guardian" placeholder="Father/Guardian"/></div>
+      <div class="fg"><label>City</label><input id="s-city" placeholder="City"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Notes</label><textarea id="s-notes" style="height:55px;resize:none;width:100%;" placeholder="Koi remarks..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-student')">Cancel</button>
+      <button class="btn btn-p" onclick="saveStudent()"><span id="s-btn-txt"><i class="fas fa-save"></i> Student Save Karein</span><span id="s-btn-spin" style="display:none;"><span class="spin"></span> Saving...</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD LEAD MODAL -->
+<div class="modal-overlay" id="modal-lead">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-crosshairs" style="color:var(--amber)"></i> Naya Lead Add Karein</div>
+    <div class="modal-sub">Inquiry ki details capture karein</div>
+    <div class="ir">
+      <div class="fg"><label>Naam *</label><input id="l-name" placeholder="Lead ka naam"/></div>
+      <div class="fg"><label>Mobile *</label><input id="l-mobile" placeholder="10-digit mobile"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Course Interest</label><select id="l-course"><option value="">Decide nahi kiya</option><option>Technical Analysis</option></select></div>
+      <div class="fg"><label>Lead Source *</label><select id="l-source"><option>Instagram</option><option>YouTube</option><option>Facebook</option><option>Reference</option><option>Walk-in</option><option>Webinar</option><option>Google</option><option>Telegram</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Trading Experience</label><select id="l-exp"><option>Beginner</option><option>Kuch experience hai</option><option>Active trader</option></select></div>
+      <div class="fg"><label>Budget Range</label><select id="l-budget"><option>₹35,000 (Full Payment)</option><option>₹18,000 (Installment 1)</option><option>₹17,000 (Installment 2)</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Counsellor</label><select id="l-counsellor"><option>Ravikant Sharma</option><option>Admin</option></select></div>
+      <div class="fg"><label>Follow-up Date</label><input type="datetime-local" id="l-followup"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Notes</label><textarea id="l-notes" style="height:55px;resize:none;width:100%;" placeholder="Kya enquiry ki..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-lead')">Cancel</button>
+      <button class="btn btn-p" onclick="saveLead()"><span id="l-btn-txt"><i class="fas fa-save"></i> Lead Save Karein</span><span id="l-btn-spin" style="display:none;"><span class="spin"></span> Saving...</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- COLLECT FEE MODAL -->
+<div class="modal-overlay" id="modal-fee">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-receipt" style="color:var(--green)"></i> Payment Collect Karein</div>
+    <div class="modal-sub">Fee payment record karein aur receipt generate karein</div>
+    <div class="ir">
+      <div class="fg"><label>Student Ka Naam *</label><input id="f-student" placeholder="Student naam search..."/></div>
+      <div class="fg"><label>Amount (₹) *</label><input type="number" id="f-amount" placeholder="0"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Course</label><select id="f-course"><option value="">-- Select --</option><option>Technical Analysis</option></select></div>
+      <div class="fg"><label>Payment Mode *</label><select id="f-mode"><option>Cash</option><option>UPI / PhonePe / GPay</option><option>NEFT / Bank Transfer</option><option>Cheque</option><option>Card</option><option>EMI</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Installment</label><select id="f-inst"><option>Full Payment</option><option>Installment 1 of 2</option><option>Installment 2 of 2</option><option>Installment 1 of 3</option><option>Installment 2 of 3</option><option>Installment 3 of 3</option></select></div>
+      <div class="fg"><label>Payment Date *</label><input type="date" id="f-date"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Discount (₹)</label><input type="number" id="f-discount" value="0"/></div>
+      <div class="fg"><label>Transaction / Cheque No.</label><input id="f-txn" placeholder="Reference number"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Remarks</label><input id="f-remarks" placeholder="e.g. Installment 2 of 3"/></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-fee')">Cancel</button>
+      <button class="btn btn-g" onclick="saveFee()"><span id="f-btn-txt"><i class="fas fa-receipt"></i> Receipt Generate Karein</span><span id="f-btn-spin" style="display:none;"><span class="spin"></span> Saving...</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg"></span></div>
+
+<!-- APP -->
+<div class="app" id="main-app" style="display:none;">
+  <div class="sidebar">
+    <div class="logo-area">
+      <div class="logo-icon"><i class="fas fa-chart-line" style="color:#fff"></i></div>
+      <div class="logo-name">Idealfinway</div>
+      <div class="logo-sub">Institute Management</div>
+    </div>
+    <div class="nav-sec">Main</div>
+    <div class="ni active" onclick="showPage('dashboard',this)"><i class="fas fa-th-large"></i>Dashboard</div>
+    <div class="ni" onclick="showPage('students',this)"><i class="fas fa-users"></i>Students<span class="nbadge a" id="nb-students">0</span></div>
+    <div class="ni" onclick="showPage('leads',this)"><i class="fas fa-crosshairs"></i>Leads / CRM<span class="nbadge" id="nb-leads">0</span></div>
+    <div class="ni" onclick="showPage('fees',this)"><i class="fas fa-indian-rupee-sign"></i>Fees<span class="nbadge" id="nb-fees">0</span></div>
+    <div class="nav-sec">Academic</div>
+    <div class="ni" onclick="showPage('batches',this)"><i class="fas fa-chalkboard-teacher"></i>Batches</div>
+    <div class="ni" onclick="showPage('courses',this)"><i class="fas fa-book-open"></i>Courses</div>
+    <div class="nav-sec">More</div>
+    <div class="ni" onclick="showPage('expenses',this)"><i class="fas fa-wallet"></i>Expenses</div>
+    <div class="ni" onclick="showPage('reports',this)"><i class="fas fa-chart-bar"></i>Reports</div>
+    <div class="ni" onclick="showPage('settings',this)"><i class="fas fa-cog"></i>Settings</div>
+    <div class="sb-footer">
+      <div class="user-pill">
+        <div class="uav" id="sb-av">A</div>
+        <div><div class="uname" id="sb-name">Admin</div><div class="urole" id="sb-role">Owner</div></div>
+        <i class="fas fa-circle" style="font-size:7px;color:var(--green);margin-left:auto;"></i>
+      </div>
+      <button class="logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div><div class="topbar-title" id="tp-title">Dashboard</div><div class="topbar-sub" id="tp-sub"></div></div>
+      <div class="topbar-actions">
+        <div class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Light/Dark Mode"><i class="fas fa-moon" id="theme-icon"></i></div>
+        <button class="btn btn-sm" onclick="openModal('modal-lead')"><i class="fas fa-plus"></i>New Lead</button>
+        <button class="btn btn-p btn-sm" onclick="openModal('modal-student')"><i class="fas fa-user-plus"></i>Add Student</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="sc blue"><div class="sc-icon blue"><i class="fas fa-users"></i></div><div class="sc-label">Total Students</div><div class="sc-val" id="d-students">—</div><div class="sc-ch up" id="d-students-s"></div></div>
+          <div class="sc green"><div class="sc-icon green"><i class="fas fa-indian-rupee-sign"></i></div><div class="sc-label">Collection (Is Mahine)</div><div class="sc-val" id="d-fees">—</div><div class="sc-ch up" id="d-fees-s"></div></div>
+          <div class="sc amber"><div class="sc-icon amber"><i class="fas fa-crosshairs"></i></div><div class="sc-label">New Leads (Is Mahine)</div><div class="sc-val" id="d-leads">—</div><div class="sc-ch up" id="d-leads-s"></div></div>
+          <div class="sc red"><div class="sc-icon red"><i class="fas fa-clock"></i></div><div class="sc-label">Pending Fees</div><div class="sc-val" id="d-pending">—</div><div class="sc-ch warn" id="d-pending-s"></div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="ch"><div><div class="ct">Haaliya Students</div><div class="cs">Naye added</div></div><span class="badge bb" id="d-rec-count">Loading...</span></div>
+            <div id="d-recent-students"><div class="empty"><i class="fas fa-users"></i><p>Abhi koi student nahi hai</p></div></div>
+          </div>
+          <div class="card">
+            <div class="ch"><div><div class="ct">Haaliya Leads</div><div class="cs">Latest inquiries</div></div><span class="badge ba" id="d-lead-count">Loading...</span></div>
+            <div id="d-recent-leads"><div class="empty"><i class="fas fa-crosshairs"></i><p>Abhi koi lead nahi hai</p></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Lead Source Performance</div></div>
+          <div id="d-source-stats"><div class="empty"><i class="fas fa-chart-pie"></i><p>Leads add karne ke baad dikhai dega</p></div></div>
+        </div>
+      </div>
+
+      <!-- STUDENTS -->
+      <div class="page" id="page-students">
+        <div class="ph"><div class="ph-title">Student Management</div><div class="ph-sub" id="s-count-sub">Students load ho rahe hain...</div></div>
+        <div class="toolbar">
+          <div class="sb"><i class="fas fa-search"></i><input id="s-search" placeholder="Naam, mobile, ya ID se search..." oninput="filterStudents()"/></div>
+          <select id="s-filter-course" onchange="filterStudents()" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:13px;outline:none;">
+            <option value="">Sabhi Courses</option><option>Technical Analysis</option>
+          </select>
+          <select id="s-filter-status" onchange="filterStudents()" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:13px;outline:none;">
+            <option value="">Sabhi Status</option><option>Active</option><option>Completed</option><option>Dropped</option><option>Inactive</option>
+          </select>
+          <button class="btn btn-sm" onclick="exportStudentsCSV()"><i class="fas fa-download"></i>Export CSV</button>
+          <button class="btn btn-p btn-sm" onclick="openModal('modal-student')"><i class="fas fa-user-plus"></i>Add Student</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="tw"><table>
+            <thead><tr><th>Student</th><th>ID</th><th>Mobile</th><th>Course</th><th>Batch</th><th>Fees Status</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="students-tbody"><tr><td colspan="8"><div class="empty"><span class="spin"></span><p style="margin-top:8px;">Loading students...</p></div></td></tr></tbody>
+          </table></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+          <div style="font-size:12px;color:var(--text3);" id="s-showing">—</div>
+        </div>
+      </div>
+
+      <!-- LEADS CRM -->
+      <div class="page" id="page-leads">
+        <div class="ph"><div class="ph-title">Lead Management — CRM</div><div class="ph-sub">Har inquiry ko track karo — source se admission tak</div></div>
+        <div class="toolbar">
+          <div class="sb"><i class="fas fa-search"></i><input id="l-search" placeholder="Naam ya mobile se search..." oninput="filterLeads()"/></div>
+          <select id="l-filter-stage" onchange="filterLeads()" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:13px;outline:none;">
+            <option value="">Sabhi Stages</option><option>New</option><option>Contacted</option><option>Demo Done</option><option>Interested</option><option>Converted</option><option>Lost</option>
+          </select>
+          <button class="btn btn-sm" onclick="exportLeadsCSV()"><i class="fas fa-download"></i>Export CSV</button>
+          <button class="btn btn-p btn-sm" onclick="openModal('modal-lead')"><i class="fas fa-plus"></i>New Lead</button>
+        </div>
+
+        <div class="pipeline" id="leads-pipeline">
+          <div class="pc"><div class="pc-h"><span class="pc-title">New</span><span class="pc-cnt" id="pc-new">0</span></div><div id="pipe-new"></div></div>
+          <div class="pc"><div class="pc-h"><span class="pc-title">Contacted</span><span class="pc-cnt" id="pc-contacted">0</span></div><div id="pipe-contacted"></div></div>
+          <div class="pc"><div class="pc-h"><span class="pc-title">Demo Done</span><span class="pc-cnt" id="pc-demo">0</span></div><div id="pipe-demo"></div></div>
+          <div class="pc"><div class="pc-h"><span class="pc-title">Interested</span><span class="pc-cnt" id="pc-interested">0</span></div><div id="pipe-interested"></div></div>
+          <div class="pc"><div class="pc-h"><span class="pc-title" style="color:var(--green)">Converted</span><span class="pc-cnt" id="pc-converted">0</span></div><div id="pipe-converted"></div></div>
+        </div>
+
+        <div class="card">
+          <div class="ch"><div class="ct">Sabhi Leads — List View</div><button class="btn btn-sm" onclick="exportLeadsCSV()"><i class="fas fa-download"></i>Export</button></div>
+          <div class="tw"><table>
+            <thead><tr><th>Lead</th><th>Mobile</th><th>Course</th><th>Source</th><th>Stage</th><th>Follow-up</th><th>Counsellor</th><th>Actions</th></tr></thead>
+            <tbody id="leads-tbody"><tr><td colspan="8"><div class="empty"><span class="spin"></span><p style="margin-top:8px;">Loading leads...</p></div></td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- FEES -->
+      <div class="page" id="page-fees">
+        <div class="ph"><div class="ph-title">Fees Management</div><div class="ph-sub">Payments collect karo, dues track karo, receipts generate karo</div></div>
+        <div class="stats-grid">
+          <div class="sc green"><div class="sc-icon green"><i class="fas fa-check-circle"></i></div><div class="sc-label">Is Mahine Collection</div><div class="sc-val" id="f-total">₹0</div><div class="sc-ch up" id="f-total-s"></div></div>
+          <div class="sc blue"><div class="sc-icon blue"><i class="fas fa-receipt"></i></div><div class="sc-label">Total Receipts</div><div class="sc-val" id="f-count">0</div><div class="sc-ch up"></div></div>
+          <div class="sc amber"><div class="sc-icon amber"><i class="fas fa-cash-register"></i></div><div class="sc-label">Cash Collection</div><div class="sc-val" id="f-cash">₹0</div><div class="sc-ch warn"></div></div>
+          <div class="sc red"><div class="sc-icon red"><i class="fas fa-mobile-alt"></i></div><div class="sc-label">Online Collection</div><div class="sc-val" id="f-online">₹0</div><div class="sc-ch up"></div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="ch"><div class="ct">Payment Collect Karein</div><button class="btn btn-p btn-sm" onclick="openModal('modal-fee')"><i class="fas fa-plus"></i>New Receipt</button></div>
+            <div class="fg" style="margin-bottom:11px;"><label>Student Ka Naam</label><input id="qf-student" placeholder="Student naam..."/></div>
+            <div class="ir">
+              <div class="fg"><label>Amount (₹)</label><input type="number" id="qf-amount" placeholder="0"/></div>
+              <div class="fg"><label>Mode</label><select id="qf-mode"><option>Cash</option><option>UPI</option><option>NEFT</option><option>Cheque</option></select></div>
+            </div>
+            <div class="fg" style="margin-bottom:14px;"><label>Date</label><input type="date" id="qf-date"/></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-g" onclick="quickFee()"><i class="fas fa-receipt"></i>Receipt Generate</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Payment Mode Breakdown</div></div>
+            <div id="fee-mode-breakdown"><div class="empty"><i class="fas fa-chart-pie"></i><p>Fees add karne ke baad dikhai dega</p></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Recent Receipts</div><button class="btn btn-sm" onclick="exportFeesCSV()"><i class="fas fa-download"></i>Export CSV</button></div>
+          <div class="tw"><table>
+            <thead><tr><th>Receipt No.</th><th>Student</th><th>Course</th><th>Amount</th><th>Mode</th><th>Date</th></tr></thead>
+            <tbody id="fees-tbody"><tr><td colspan="6"><div class="empty"><span class="spin"></span><p style="margin-top:8px;">Loading fees...</p></div></td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- BATCHES -->
+      <div class="page" id="page-batches">
+        <div class="ph"><div class="ph-title">Batch Management</div><div class="ph-sub">Sabhi running aur upcoming batches manage karo</div></div>
+        <div class="two-col">
+          <div class="card" style="border-top:2px solid var(--accent)"><div style="display:flex;justify-content:space-between;margin-bottom:10px;"><div><div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;">Batch — Technical Analysis</div><div style="font-size:12px;color:var(--text3);margin-top:2px;"><i class="fas fa-user-tie"></i> Ravikant Sharma</div></div><span class="badge bg">Active</span></div><div class="info-row"><div class="ii">Students: <b>0/20</b></div><div class="ii">Course: <b>Technical Analysis</b></div><div class="ii">Fees: <b>₹35,000</b></div></div><div class="prog"><div class="prog-f" style="width:0%;background:var(--accent);"></div></div><div style="display:flex;gap:8px;margin-top:12px;"><button class="btn btn-sm"><i class="fas fa-users"></i>Students</button><button class="btn btn-sm"><i class="fas fa-calendar-check"></i>Attendance</button></div></div>
+        </div>
+      </div>
+
+      <!-- COURSES -->
+      <div class="page" id="page-courses">
+        <div class="ph"><div class="ph-title">Course Management</div><div class="ph-sub">Sabhi courses, fees aur curriculum manage karo</div></div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table><thead><tr><th>Course</th><th>Duration</th><th>Fees</th><th>Level</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--text);font-weight:500;">Technical Analysis</td><td>8 weeks</td><td style="color:var(--green);">₹35,000</td><td><span class="badge bb">Intermediate</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+      <!-- EXPENSES -->
+      <div class="page" id="page-expenses">
+        <div class="ph"><div class="ph-title">Expense Tracking</div><div class="ph-sub">Sab kharche track karo aur P&L dekho</div></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="ch"><div class="ct">Naya Kharcha Add Karein</div></div>
+            <div class="ir"><div class="fg"><label>Category</label><select id="e-cat"><option>Rent</option><option>Salary</option><option>Marketing / Ads</option><option>Utilities</option><option>Printing</option><option>Software / Tools</option><option>Miscellaneous</option></select></div><div class="fg"><label>Amount (₹)</label><input type="number" id="e-amount" placeholder="0"/></div></div>
+            <div class="ir"><div class="fg"><label>Date</label><input type="date" id="e-date"/></div><div class="fg"><label>Mode</label><select id="e-mode"><option>Cash</option><option>Bank Transfer</option><option>UPI</option><option>Cheque</option></select></div></div>
+            <div class="fg" style="margin-bottom:14px;"><label>Description</label><input id="e-desc" placeholder="Kharche ka description..."/></div>
+            <button class="btn btn-p" onclick="saveExpense()"><i class="fas fa-save"></i>Save Expense</button>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Is Mahine — Summary</div></div>
+            <div id="expense-summary"><div class="empty"><i class="fas fa-wallet"></i><p>Kharche add karne ke baad dikhai dega</p></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Recent Expenses</div><button class="btn btn-sm" onclick="exportExpensesCSV()"><i class="fas fa-download"></i>Export</button></div>
+          <div class="tw"><table>
+            <thead><tr><th>Category</th><th>Description</th><th>Amount</th><th>Mode</th><th>Date</th></tr></thead>
+            <tbody id="expenses-tbody"><tr><td colspan="5"><div class="empty"><span class="spin"></span><p style="margin-top:8px;">Loading...</p></div></td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="page-reports">
+        <div class="ph"><div class="ph-title">Reports & Analytics</div><div class="ph-sub">Business data download karo — Excel mein</div></div>
+        <div class="stats-grid">
+          <div class="sc blue"><div class="sc-icon blue"><i class="fas fa-users"></i></div><div class="sc-label">Total Students</div><div class="sc-val" id="r-students">—</div></div>
+          <div class="sc green"><div class="sc-icon green"><i class="fas fa-indian-rupee-sign"></i></div><div class="sc-label">Total Collection</div><div class="sc-val" id="r-fees">—</div></div>
+          <div class="sc amber"><div class="sc-icon amber"><i class="fas fa-crosshairs"></i></div><div class="sc-label">Total Leads</div><div class="sc-val" id="r-leads">—</div></div>
+          <div class="sc red"><div class="sc-icon red"><i class="fas fa-percentage"></i></div><div class="sc-label">Conversion Rate</div><div class="sc-val" id="r-conv">—</div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Reports Download Karein — CSV/Excel</div></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportStudentsCSV()"><i class="fas fa-file-csv" style="font-size:20px;color:var(--green);"></i><div style="text-align:left;"><div>Students Report</div><div style="font-size:11px;color:var(--text3);">Sabhi students ka data</div></div></button>
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportLeadsCSV()"><i class="fas fa-file-csv" style="font-size:20px;color:var(--amber);"></i><div style="text-align:left;"><div>Leads Report</div><div style="font-size:11px;color:var(--text3);">CRM data</div></div></button>
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportFeesCSV()"><i class="fas fa-file-csv" style="font-size:20px;color:var(--accent2);"></i><div style="text-align:left;"><div>Fees Report</div><div style="font-size:11px;color:var(--text3);">Sabhi receipts</div></div></button>
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportExpensesCSV()"><i class="fas fa-file-csv" style="font-size:20px;color:var(--purple);"></i><div style="text-align:left;"><div>Expenses Report</div><div style="font-size:11px;color:var(--text3);">Sab kharche</div></div></button>
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportAllCSV()"><i class="fas fa-file-archive" style="font-size:20px;color:var(--red);"></i><div style="text-align:left;"><div>Full Backup</div><div style="font-size:11px;color:var(--text3);">Sab data ek saath</div></div></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="ph"><div class="ph-title">Settings</div><div class="ph-sub">Institute profile, login, aur database configure karo</div></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="ch"><div class="ct">Institute Profile</div></div>
+            <div class="fg" style="margin-bottom:11px;"><label>Institute Naam</label><input id="set-name" placeholder="Institute ka naam"/></div>
+            <div class="fg" style="margin-bottom:11px;"><label>Owner Naam</label><input id="set-owner" placeholder="Aapka naam"/></div>
+            <div class="fg" style="margin-bottom:11px;"><label>Mobile / WhatsApp</label><input id="set-mobile" placeholder="9876543210"/></div>
+            <div class="fg" style="margin-bottom:11px;"><label>City</label><input id="set-city" placeholder="Delhi"/></div>
+            <div class="fg" style="margin-bottom:14px;"><label>GST Number</label><input id="set-gst" placeholder="Optional"/></div>
+            <button class="btn btn-p" onclick="saveSettings()"><i class="fas fa-save"></i>Settings Save Karein</button>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="ch"><div class="ct"><i class="fas fa-key" style="color:var(--amber);"></i> Password Change Karein</div></div>
+              <div class="fg" style="margin-bottom:11px;"><label>Current Password</label><input type="password" id="cp-old" placeholder="Purana password"/></div>
+              <div class="fg" style="margin-bottom:11px;"><label>New Password</label><input type="password" id="cp-new" placeholder="Naya password"/></div>
+              <div class="fg" style="margin-bottom:14px;"><label>Confirm Password</label><input type="password" id="cp-confirm" placeholder="Dobara likho"/></div>
+              <button class="btn" style="background:var(--amber-bg);border-color:rgba(245,158,11,0.2);color:var(--amber);" onclick="changePassword()"><i class="fas fa-key"></i>Change Karein</button>
+            </div>
+            <div class="card">
+              <div class="ch"><div><div class="ct"><i class="fas fa-database" style="color:var(--accent2);"></i> Database Config</div><div class="cs" id="db-status-text">Status check ho raha hai...</div></div><span class="badge" id="db-status-badge">Checking</span></div>
+              <button class="btn btn-sm" onclick="openModal('modal-config')" style="width:100%;justify-content:center;"><i class="fas fa-plug"></i>Supabase Reconnect / Change</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// THEME TOGGLE — Light / Dark
+// ═══════════════════════════════════════════════════════
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  const icon = document.getElementById('theme-icon');
+  if (isLight) {
+    icon.className = 'fas fa-sun';
+    document.getElementById('theme-btn').title = 'Dark Mode pe jaayein';
+  } else {
+    icon.className = 'fas fa-moon';
+    document.getElementById('theme-btn').title = 'Light Mode pe jaayein';
+  }
+  LDB.set('theme', isLight ? 'light' : 'dark');
+}
+
+function initTheme() {
+  const saved = LDB.get('theme', 'dark');
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    const icon = document.getElementById('theme-icon');
+    if (icon) icon.className = 'fas fa-sun';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SUPABASE CONFIG
+// ═══════════════════════════════════════════════════════
+let SUPABASE_URL = localStorage.getItem('sb_url') || '';
+let SUPABASE_KEY = localStorage.getItem('sb_key') || '';
+let supabaseReady = false;
+
+async function sbFetch(table, method='GET', body=null, params='') {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  const url = `${SUPABASE_URL}/rest/v1/${table}${params}`;
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method==='POST' ? 'return=representation' : ''
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const r = await fetch(url, opts);
+    if (!r.ok) { const e = await r.text(); console.error(e); return null; }
+    if (method==='DELETE') return true;
+    const text = await r.text();
+    return text ? JSON.parse(text) : [];
+  } catch(e) { console.error(e); return null; }
+}
+
+async function saveSupabaseConfig() {
+  const url = document.getElementById('cfg-url').value.trim().replace(/\/$/, '');
+  const key = document.getElementById('cfg-key').value.trim();
+  if (!url || !key) { showToast('URL aur Key dono required hain!', true); return; }
+  SUPABASE_URL = url;
+  SUPABASE_KEY = key;
+  const test = await sbFetch('users', 'GET', null, '?select=id&limit=1');
+  if (test !== null) {
+    localStorage.setItem('sb_url', url);
+    localStorage.setItem('sb_key', key);
+    supabaseReady = true;
+    closeModal('modal-config');
+    document.getElementById('setup-banner').classList.add('hidden');
+    document.getElementById('db-status-badge').className = 'badge bg';
+    document.getElementById('db-status-badge').textContent = 'Connected ✓';
+    document.getElementById('db-status-text').textContent = 'Supabase connected — data cloud pe save ho raha hai';
+    showToast('✅ Supabase connected! Data ab permanently save hoga.');
+    loadAllData();
+  } else {
+    showToast('❌ Connection fail! URL aur Key check karein.', true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// LOCAL DB FALLBACK (jab Supabase nahi ho)
+// ═══════════════════════════════════════════════════════
+const LDB = {
+  get: (k, d=[]) => { try { const v=localStorage.getItem('se_'+k); return v?JSON.parse(v):d; } catch { return d; } },
+  set: (k,v) => { try { localStorage.setItem('se_'+k, JSON.stringify(v)); } catch(e){} },
+};
+
+function initLocalUsers() {
+  if (!LDB.get('users', null)) {
+    LDB.set('users', [
+      {id:1, name:'Admin', username:'admin', password:'stockedu@2026', role:'Admin'},
+      {id:2, name:'Ravikant Sharma', username:'ravikant', password:'ravikant@123', role:'Teacher'},
+      {id:3, name:'Receptionist', username:'reception', password:'reception@123', role:'Receptionist'},
+    ]);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════
+let currentUser = null;
+
+async function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value.trim();
+  if (!u||!p) { showLoginErr('Username aur password dono bharein!'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.innerHTML = '<span class="spin"></span> Logging in...';
+  btn.disabled = true;
+
+  let user = null;
+
+  // Try Supabase first
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    const res = await sbFetch('users','GET',null,`?username=eq.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*&limit=1`);
+    if (res && res.length > 0) user = res[0];
+  }
+
+  // Fallback to localStorage
+  if (!user) {
+    const localUsers = LDB.get('users', []);
+    user = localUsers.find(x => x.username===u && x.password===p) || null;
+  }
+
+  btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login karein';
+  btn.disabled = false;
+
+  if (user) {
+    currentUser = user;
+    LDB.set('session', {userId: user.id, time: Date.now()});
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('main-app').style.display = 'flex';
+    document.getElementById('login-err').classList.remove('show');
+    document.getElementById('sb-av').textContent = user.name[0].toUpperCase();
+    document.getElementById('sb-name').textContent = user.name;
+    document.getElementById('sb-role').textContent = user.role;
+    checkDbStatus();
+    loadAllData();
+  } else {
+    showLoginErr('Galat username ya password. Dobara try karein.');
+    document.getElementById('lp').value = '';
+    document.getElementById('lp').focus();
+  }
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('login-err');
+  document.getElementById('login-err-msg').textContent = msg;
+  el.classList.add('show');
+}
+
+function doLogout() {
+  currentUser = null;
+  LDB.set('session', null);
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+  document.getElementById('login-err').classList.remove('show');
+}
+
+function checkSession() {
+  initLocalUsers();
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    supabaseReady = true;
+    document.getElementById('setup-banner').classList.add('hidden');
+  }
+  const sess = LDB.get('session', null);
+  if (sess) {
+    const users = LDB.get('users', []);
+    const u = users.find(x => x.id===sess.userId);
+    if (u) {
+      currentUser = u;
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('main-app').style.display = 'flex';
+      document.getElementById('sb-av').textContent = u.name[0].toUpperCase();
+      document.getElementById('sb-name').textContent = u.name;
+      document.getElementById('sb-role').textContent = u.role;
+      checkDbStatus();
+      loadAllData();
+    }
+  }
+}
+
+function checkDbStatus() {
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    document.getElementById('db-status-badge').className = 'badge bg';
+    document.getElementById('db-status-badge').textContent = 'Connected ✓';
+    document.getElementById('db-status-text').textContent = 'Cloud database — data permanent hai';
+  } else {
+    document.getElementById('db-status-badge').className = 'badge ba';
+    document.getElementById('db-status-badge').textContent = 'Browser Only';
+    document.getElementById('db-status-text').textContent = 'Sirf is browser mein save hoga';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// DATA HELPERS
+// ═══════════════════════════════════════════════════════
+async function getData(table) {
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    const r = await sbFetch(table,'GET',null,'?select=*&order=created_at.desc');
+    if (r !== null) return r;
+  }
+  return LDB.get(table, []);
+}
+
+async function insertData(table, obj) {
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    const r = await sbFetch(table,'POST',obj);
+    if (r) return r;
+  }
+  const arr = LDB.get(table, []);
+  const newObj = {...obj, id: Date.now(), created_at: new Date().toISOString()};
+  arr.unshift(newObj);
+  LDB.set(table, arr);
+  return [newObj];
+}
+
+// ═══════════════════════════════════════════════════════
+// LOAD ALL DATA
+// ═══════════════════════════════════════════════════════
+let allStudents=[], allLeads=[], allFees=[], allExpenses=[];
+
+async function loadAllData() {
+  [allStudents, allLeads, allFees, allExpenses] = await Promise.all([
+    getData('students'), getData('leads'), getData('fees'), getData('expenses')
+  ]);
+  updateDashboard();
+  renderStudents(allStudents);
+  renderLeads(allLeads);
+  renderFees(allFees);
+  renderExpenses(allExpenses);
+  updateBadges();
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════
+function updateDashboard() {
+  const now = new Date();
+  const m = now.getMonth(), y = now.getFullYear();
+
+  const activeStudents = allStudents.filter(s=>s.status==='Active'||!s.status);
+  document.getElementById('d-students').textContent = allStudents.length;
+  document.getElementById('d-students-s').innerHTML = `<i class="fas fa-circle" style="font-size:7px"></i> ${activeStudents.length} active`;
+
+  const monthFees = allFees.filter(f=>{ const d=new Date(f.created_at||f.payment_date); return d.getMonth()===m&&d.getFullYear()===y; });
+  const feeSum = monthFees.reduce((a,f)=>a+(parseFloat(f.amount)||0),0);
+  document.getElementById('d-fees').textContent = '₹'+fmtNum(feeSum);
+  document.getElementById('d-fees-s').innerHTML = `${monthFees.length} receipts this month`;
+
+  const monthLeads = allLeads.filter(l=>{ const d=new Date(l.created_at); return d.getMonth()===m&&d.getFullYear()===y; });
+  const converted = allLeads.filter(l=>l.stage==='Converted');
+  document.getElementById('d-leads').textContent = monthLeads.length;
+  document.getElementById('d-leads-s').innerHTML = `<i class="fas fa-check" style="font-size:9px"></i> ${converted.length} converted total`;
+
+  document.getElementById('d-pending').textContent = allStudents.filter(s=>s.fees_status==='Pending').length;
+  document.getElementById('d-pending-s').innerHTML = 'Students ki fees pending';
+
+  // Recent students
+  const recS = allStudents.slice(0,4);
+  const rsCont = document.getElementById('d-recent-students');
+  document.getElementById('d-rec-count').textContent = allStudents.length + ' total';
+  if (recS.length===0) { rsCont.innerHTML = '<div class="empty"><i class="fas fa-users"></i><p>Abhi koi student nahi</p></div>'; }
+  else {
+    rsCont.innerHTML = '<div class="al">'+recS.map(s=>`
+      <div class="ai"><div class="av ${avColor(s.name)}">${s.name[0].toUpperCase()}</div>
+      <div class="ai-info"><div class="ai-name">${s.name}</div><div class="ai-sub">${s.course||'—'} · ${s.city||'—'}</div></div>
+      <span class="badge ${feesBadge(s.fees_status)}">${s.fees_status||'Pending'}</span></div>`).join('')+'</div>';
+  }
+
+  // Recent leads
+  const recL = allLeads.slice(0,4);
+  const rlCont = document.getElementById('d-recent-leads');
+  document.getElementById('d-lead-count').textContent = allLeads.length + ' total';
+  if (recL.length===0) { rlCont.innerHTML = '<div class="empty"><i class="fas fa-crosshairs"></i><p>Abhi koi lead nahi</p></div>'; }
+  else {
+    rlCont.innerHTML = '<div class="al">'+recL.map(l=>`
+      <div class="ai"><div class="av av-a">${l.name[0].toUpperCase()}</div>
+      <div class="ai-info"><div class="ai-name">${l.name}</div><div class="ai-sub">${l.source||'—'} · ${l.course_interest||'—'}</div></div>
+      <span class="badge ${stageBadge(l.stage)}">${l.stage||'New'}</span></div>`).join('')+'</div>';
+  }
+
+  // Source stats
+  const sources = {};
+  allLeads.forEach(l=>{ const s=l.source||'Unknown'; sources[s]=(sources[s]||0)+1; });
+  const srcCont = document.getElementById('d-source-stats');
+  if (Object.keys(sources).length===0) { srcCont.innerHTML = '<div class="empty"><i class="fas fa-chart-pie"></i><p>Leads add karne ke baad</p></div>'; }
+  else {
+    const total = allLeads.length;
+    srcCont.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">'+
+      Object.entries(sources).sort((a,b)=>b[1]-a[1]).map(([s,c])=>`
+        <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;border:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:500;color:var(--text);">${s}</div>
+          <div style="font-size:20px;font-weight:700;color:var(--accent2);margin:4px 0;">${c}</div>
+          <div style="font-size:11px;color:var(--text3);">${Math.round(c/total*100)}% of leads</div>
+        </div>`).join('')+'</div>';
+  }
+
+  // Reports numbers
+  const rfEl=document.getElementById('r-fees'); if(rfEl) rfEl.textContent='₹'+fmtNum(allFees.reduce((a,f)=>a+(parseFloat(f.amount)||0),0));
+  const rsEl=document.getElementById('r-students'); if(rsEl) rsEl.textContent=allStudents.length;
+  const rlEl=document.getElementById('r-leads'); if(rlEl) rlEl.textContent=allLeads.length;
+  const rcEl=document.getElementById('r-conv'); if(rcEl) rcEl.textContent=allLeads.length>0?Math.round(converted.length/allLeads.length*100)+'%':'0%';
+}
+
+function updateBadges() {
+  document.getElementById('nb-students').textContent = allStudents.length;
+  document.getElementById('nb-leads').textContent = allLeads.filter(l=>l.stage!=='Converted'&&l.stage!=='Lost').length;
+  document.getElementById('nb-fees').textContent = allStudents.filter(s=>s.fees_status==='Pending').length;
+}
+
+// ═══════════════════════════════════════════════════════
+// STUDENTS
+// ═══════════════════════════════════════════════════════
+function renderStudents(data) {
+  const tbody = document.getElementById('students-tbody');
+  document.getElementById('s-count-sub').textContent = `${data.length} students — manage karo, search karo, export karo`;
+  document.getElementById('s-showing').textContent = `${data.length} students dikhai de rahe hain`;
+  if (data.length===0) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><i class="fas fa-users"></i><p>Koi student nahi mila. "Add Student" karein!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(s=>`
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:9px;"><div class="av ${avColor(s.name)}">${s.name[0].toUpperCase()}</div><div style="color:var(--text);font-weight:500;">${s.name}</div></div></td>
+      <td style="font-size:11px;color:var(--text3);">${s.student_id||'—'}</td>
+      <td>${s.mobile||'—'}</td>
+      <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.course||'—'}</td>
+      <td>${s.batch||'—'}</td>
+      <td><span class="badge ${feesBadge(s.fees_status)}">${s.fees_status||'Pending'}</span></td>
+      <td><span class="badge ${statusBadge(s.status)}">${s.status||'Active'}</span></td>
+      <td><div style="display:flex;gap:5px;"><div class="ib" title="View" onclick="viewStudent(${s.id})"><i class="fas fa-eye"></i></div><div class="ib wh" title="WhatsApp" onclick="waMsg('${s.mobile||s.whatsapp}')"><i class="fab fa-whatsapp"></i></div></div></td>
+    </tr>`).join('');
+}
+
+function filterStudents() {
+  const q = document.getElementById('s-search').value.toLowerCase();
+  const course = document.getElementById('s-filter-course').value;
+  const status = document.getElementById('s-filter-status').value;
+  let filtered = allStudents.filter(s => {
+    const matchQ = !q || s.name?.toLowerCase().includes(q) || s.mobile?.includes(q) || s.student_id?.toLowerCase().includes(q);
+    const matchC = !course || s.course===course;
+    const matchS = !status || s.status===status;
+    return matchQ && matchC && matchS;
+  });
+  renderStudents(filtered);
+}
+
+async function saveStudent() {
+  const name=document.getElementById('s-name').value.trim();
+  const mobile=document.getElementById('s-mobile').value.trim();
+  const course=document.getElementById('s-course').value;
+  if (!name) { showToast('Naam required hai!', true); return; }
+  if (!mobile || mobile.length!==10) { showToast('Valid 10-digit mobile number bharein!', true); return; }
+  if (!course) { showToast('Course select karein!', true); return; }
+
+  document.getElementById('s-btn-txt').style.display='none';
+  document.getElementById('s-btn-spin').style.display='inline-flex';
+
+  const count = allStudents.length;
+  const sid = 'SMI'+new Date().getFullYear()+String(count+1).padStart(4,'0');
+  const obj = {
+    student_id:sid, name, mobile,
+    email:document.getElementById('s-email').value.trim(),
+    whatsapp:document.getElementById('s-whatsapp').value.trim()||mobile,
+    course, batch:document.getElementById('s-batch').value,
+    trading_bg:document.getElementById('s-tbg').value,
+    profession:document.getElementById('s-prof').value,
+    guardian:document.getElementById('s-guardian').value.trim(),
+    city:document.getElementById('s-city').value.trim(),
+    notes:document.getElementById('s-notes').value.trim(),
+    status:'Active', fees_status:'Pending',
+    joined_date:new Date().toLocaleDateString('en-IN')
+  };
+  const res = await insertData('students', obj);
+  document.getElementById('s-btn-txt').style.display='';
+  document.getElementById('s-btn-spin').style.display='none';
+  if (res) {
+    allStudents.unshift(res[0]||obj);
+    closeModal('modal-student');
+    clearForm(['s-name','s-mobile','s-email','s-whatsapp','s-guardian','s-city','s-notes']);
+    renderStudents(allStudents);
+    updateDashboard();
+    updateBadges();
+    showToast(`✅ Student added! ID: ${sid}`);
+  } else { showToast('❌ Error! Dobara try karein.', true); }
+}
+
+function viewStudent(id) {
+  const s = allStudents.find(x=>x.id==id);
+  if (!s) return;
+  showToast(`👤 ${s.name} | ${s.mobile} | ${s.course||'—'} | ${s.city||'—'}`);
+}
+
+// ═══════════════════════════════════════════════════════
+// LEADS
+// ═══════════════════════════════════════════════════════
+function renderLeads(data) {
+  // Pipeline
+  const stages = ['New','Contacted','Demo Done','Interested','Converted'];
+  const ids = ['new','contacted','demo','interested','converted'];
+  stages.forEach((st,i)=>{
+    const items = data.filter(l=>(l.stage||'New')===st);
+    document.getElementById('pc-'+ids[i]).textContent = items.length;
+    const cont = document.getElementById('pipe-'+ids[i]);
+    if (!cont) return;
+    if (items.length===0) { cont.innerHTML = `<div style="font-size:11px;color:var(--text3);text-align:center;padding:10px 0;">Koi lead nahi</div>`; return; }
+    cont.innerHTML = items.slice(0,3).map(l=>`
+      <div class="pk">
+        <div class="pk-name">${l.name}</div>
+        <div class="pk-info"><i class="fas fa-phone" style="font-size:10px;"></i> ${l.mobile||'—'}</div>
+        <div class="pk-info">${l.source||'—'} · ${l.course_interest||'—'}</div>
+      </div>`).join('');
+  });
+
+  // Table
+  const tbody = document.getElementById('leads-tbody');
+  if (data.length===0) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><i class="fas fa-crosshairs"></i><p>Koi lead nahi. "New Lead" add karein!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(l=>`
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:9px;"><div class="av av-a">${l.name[0].toUpperCase()}</div><div style="color:var(--text);font-weight:500;">${l.name}</div></div></td>
+      <td>${l.mobile||'—'}</td>
+      <td>${l.course_interest||'—'}</td>
+      <td>${l.source||'—'}</td>
+      <td><span class="badge ${stageBadge(l.stage)}">${l.stage||'New'}</span></td>
+      <td style="font-size:12px;">${l.followup_date ? new Date(l.followup_date).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—'}</td>
+      <td>${l.counsellor||'—'}</td>
+      <td><div style="display:flex;gap:5px;">
+        <select onchange="updateLeadStage(${l.id},this.value)" style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--text);font-size:11px;outline:none;">
+          ${['New','Contacted','Demo Done','Interested','Converted','Lost'].map(s=>`<option ${s===l.stage?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <div class="ib wh" onclick="waMsg('${l.mobile}')"><i class="fab fa-whatsapp"></i></div>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filterLeads() {
+  const q = document.getElementById('l-search').value.toLowerCase();
+  const stage = document.getElementById('l-filter-stage').value;
+  let filtered = allLeads.filter(l=>{
+    const mq = !q || l.name?.toLowerCase().includes(q) || l.mobile?.includes(q);
+    const ms = !stage || l.stage===stage;
+    return mq && ms;
+  });
+  renderLeads(filtered);
+}
+
+async function updateLeadStage(id, stage) {
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    await sbFetch('leads','PATCH',{stage},`?id=eq.${id}`);
+  }
+  const idx = allLeads.findIndex(l=>l.id==id);
+  if (idx>-1) { allLeads[idx].stage=stage; if(!SUPABASE_URL) LDB.set('leads',allLeads); }
+  updateDashboard();
+  updateBadges();
+  showToast('Stage updated: '+stage);
+}
+
+async function saveLead() {
+  const name=document.getElementById('l-name').value.trim();
+  const mobile=document.getElementById('l-mobile').value.trim();
+  if (!name) { showToast('Naam required!', true); return; }
+  if (!mobile) { showToast('Mobile required!', true); return; }
+
+  document.getElementById('l-btn-txt').style.display='none';
+  document.getElementById('l-btn-spin').style.display='inline-flex';
+
+  const obj = {
+    name, mobile,
+    email:'',
+    course_interest:document.getElementById('l-course').value,
+    source:document.getElementById('l-source').value,
+    trading_exp:document.getElementById('l-exp').value,
+    budget:document.getElementById('l-budget').value,
+    stage:'New',
+    counsellor:document.getElementById('l-counsellor').value,
+    followup_date:document.getElementById('l-followup').value||null,
+    notes:document.getElementById('l-notes').value.trim()
+  };
+  const res = await insertData('leads', obj);
+  document.getElementById('l-btn-txt').style.display='';
+  document.getElementById('l-btn-spin').style.display='none';
+  if (res) {
+    allLeads.unshift(res[0]||obj);
+    closeModal('modal-lead');
+    clearForm(['l-name','l-mobile','l-notes','l-followup']);
+    renderLeads(allLeads);
+    updateDashboard();
+    updateBadges();
+    showToast('✅ Lead saved! Follow-up set.');
+  } else { showToast('❌ Error saving lead!', true); }
+}
+
+// ═══════════════════════════════════════════════════════
+// FEES
+// ═══════════════════════════════════════════════════════
+function renderFees(data) {
+  // Stats
+  const total = data.reduce((a,f)=>a+(parseFloat(f.amount)||0),0);
+  const cash = data.filter(f=>f.payment_mode==='Cash').reduce((a,f)=>a+(parseFloat(f.amount)||0),0);
+  const online = total - cash;
+  document.getElementById('f-total').textContent = '₹'+fmtNum(total);
+  document.getElementById('f-count').textContent = data.length;
+  document.getElementById('f-cash').textContent = '₹'+fmtNum(cash);
+  document.getElementById('f-online').textContent = '₹'+fmtNum(online);
+  document.getElementById('f-total-s').textContent = data.length + ' receipts total';
+
+  // Mode breakdown
+  const modes = {};
+  data.forEach(f=>{ const m=f.payment_mode||'Cash'; modes[m]=(modes[m]||0)+(parseFloat(f.amount)||0); });
+  const mbEl = document.getElementById('fee-mode-breakdown');
+  if (Object.keys(modes).length===0) { mbEl.innerHTML = '<div class="empty"><i class="fas fa-chart-pie"></i><p>Fees add karne ke baad</p></div>'; }
+  else {
+    mbEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'+
+      Object.entries(modes).sort((a,b)=>b[1]-a[1]).map(([m,a])=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:var(--rs);">
+          <span style="color:var(--text);font-size:13px;">${m}</span>
+          <span style="color:var(--green);font-weight:600;">₹${fmtNum(a)}</span>
+        </div>`).join('')+'</div>';
+  }
+
+  // Table
+  const tbody = document.getElementById('fees-tbody');
+  if (data.length===0) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><i class="fas fa-receipt"></i><p>Koi payment nahi. "New Receipt" banayein!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.slice(0,50).map(f=>`
+    <tr>
+      <td style="font-size:11px;color:var(--text3);">${f.receipt_no||'—'}</td>
+      <td style="color:var(--text);font-weight:500;">${f.student_name||'—'}</td>
+      <td>${f.course||'—'}</td>
+      <td style="color:var(--green);font-weight:600;">₹${fmtNum(parseFloat(f.amount)||0)}</td>
+      <td><span class="badge ${f.payment_mode==='Cash'?'bgr':'bb'}">${f.payment_mode||'—'}</span></td>
+      <td>${f.payment_date||'—'}</td>
+    </tr>`).join('');
+}
+
+async function saveFee() {
+  const student=document.getElementById('f-student').value.trim();
+  const amount=document.getElementById('f-amount').value;
+  const date=document.getElementById('f-date').value;
+  if (!student) { showToast('Student naam required!', true); return; }
+  if (!amount || parseFloat(amount)<=0) { showToast('Valid amount bharein!', true); return; }
+  if (!date) { showToast('Payment date bharein!', true); return; }
+
+  document.getElementById('f-btn-txt').style.display='none';
+  document.getElementById('f-btn-spin').style.display='inline-flex';
+
+  const rno = 'RCP-'+new Date().getFullYear()+'-'+String(allFees.length+1).padStart(4,'0');
+  const obj = {
+    receipt_no:rno, student_name:student,
+    course:document.getElementById('f-course').value,
+    amount:parseFloat(amount),
+    discount:parseFloat(document.getElementById('f-discount').value||0),
+    payment_mode:document.getElementById('f-mode').value,
+    installment:document.getElementById('f-inst').value,
+    transaction_ref:document.getElementById('f-txn').value.trim(),
+    remarks:document.getElementById('f-remarks').value.trim(),
+    payment_date:date
+  };
+  const res = await insertData('fees', obj);
+  document.getElementById('f-btn-txt').style.display='';
+  document.getElementById('f-btn-spin').style.display='none';
+  if (res) {
+    allFees.unshift(res[0]||obj);
+    closeModal('modal-fee');
+    clearForm(['f-student','f-amount','f-txn','f-remarks']);
+    document.getElementById('f-discount').value='0';
+    renderFees(allFees);
+    updateDashboard();
+    showToast(`✅ Receipt ${rno} generated!`);
+  } else { showToast('❌ Error saving fee!', true); }
+}
+
+async function quickFee() {
+  const student=document.getElementById('qf-student').value.trim();
+  const amount=document.getElementById('qf-amount').value;
+  const date=document.getElementById('qf-date').value;
+  if (!student||!amount||!date) { showToast('Naam, amount aur date bharein!', true); return; }
+  const rno = 'RCP-'+new Date().getFullYear()+'-'+String(allFees.length+1).padStart(4,'0');
+  const obj = { receipt_no:rno, student_name:student, amount:parseFloat(amount), payment_mode:document.getElementById('qf-mode').value, payment_date:date };
+  const res = await insertData('fees', obj);
+  if (res) {
+    allFees.unshift(res[0]||obj);
+    renderFees(allFees);
+    updateDashboard();
+    document.getElementById('qf-student').value='';
+    document.getElementById('qf-amount').value='';
+    showToast(`✅ Quick receipt ${rno} generated!`);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// EXPENSES
+// ═══════════════════════════════════════════════════════
+function renderExpenses(data) {
+  const now = new Date();
+  const m=now.getMonth(), y=now.getFullYear();
+  const monthExp = data.filter(e=>{ const d=new Date(e.created_at||e.expense_date); return d.getMonth()===m&&d.getFullYear()===y; });
+  const total = monthExp.reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
+
+  const sumEl = document.getElementById('expense-summary');
+  if (monthExp.length===0) { sumEl.innerHTML = '<div class="empty"><i class="fas fa-wallet"></i><p>Is mahine koi kharcha nahi</p></div>'; }
+  else {
+    const cats = {};
+    monthExp.forEach(e=>{ cats[e.category]=(cats[e.category]||0)+(parseFloat(e.amount)||0); });
+    sumEl.innerHTML = `<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--text2);font-size:13px;">Is mahine ka kharcha</span><span style="color:var(--red);font-weight:700;font-size:18px;">₹${fmtNum(total)}</span></div>`+
+      '<div style="display:flex;flex-direction:column;gap:6px;">'+Object.entries(cats).map(([c,a])=>`
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg3);border-radius:var(--rs);">
+          <span style="color:var(--text2);font-size:13px;">${c}</span>
+          <span style="color:var(--red);font-weight:500;">₹${fmtNum(a)}</span>
+        </div>`).join('')+'</div>';
+  }
+
+  const tbody = document.getElementById('expenses-tbody');
+  if (data.length===0) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><i class="fas fa-wallet"></i><p>Koi expense nahi</p></div></td></tr>'; return; }
+  tbody.innerHTML = data.slice(0,30).map(e=>`
+    <tr>
+      <td><span class="badge bgr">${e.category||'—'}</span></td>
+      <td>${e.description||'—'}</td>
+      <td style="color:var(--red);font-weight:600;">₹${fmtNum(parseFloat(e.amount)||0)}</td>
+      <td>${e.payment_mode||'—'}</td>
+      <td>${e.expense_date||'—'}</td>
+    </tr>`).join('');
+}
+
+async function saveExpense() {
+  const cat=document.getElementById('e-cat').value;
+  const amount=document.getElementById('e-amount').value;
+  const date=document.getElementById('e-date').value;
+  if (!amount||parseFloat(amount)<=0) { showToast('Valid amount bharein!', true); return; }
+  if (!date) { showToast('Date bharein!', true); return; }
+  const obj = { category:cat, amount:parseFloat(amount), description:document.getElementById('e-desc').value.trim(), payment_mode:document.getElementById('e-mode').value, expense_date:date };
+  const res = await insertData('expenses', obj);
+  if (res) {
+    allExpenses.unshift(res[0]||obj);
+    clearForm(['e-amount','e-desc']);
+    renderExpenses(allExpenses);
+    showToast('✅ Expense saved!');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+function saveSettings() {
+  const s = { name:document.getElementById('set-name').value, owner:document.getElementById('set-owner').value, mobile:document.getElementById('set-mobile').value, city:document.getElementById('set-city').value, gst:document.getElementById('set-gst').value };
+  LDB.set('settings', s);
+  showToast('✅ Settings saved!');
+}
+function loadSettings() {
+  const s = LDB.get('settings', {});
+  if (document.getElementById('set-name')) { document.getElementById('set-name').value=s.name||''; document.getElementById('set-owner').value=s.owner||''; document.getElementById('set-mobile').value=s.mobile||''; document.getElementById('set-city').value=s.city||''; document.getElementById('set-gst').value=s.gst||''; }
+}
+function changePassword() {
+  const oldP=document.getElementById('cp-old').value;
+  const newP=document.getElementById('cp-new').value;
+  const conf=document.getElementById('cp-confirm').value;
+  if (!currentUser) return;
+  if (oldP!==currentUser.password) { showToast('❌ Purana password galat!', true); return; }
+  if (newP.length<6) { showToast('❌ Password min 6 characters!', true); return; }
+  if (newP!==conf) { showToast('❌ Passwords match nahi!', true); return; }
+  const users = LDB.get('users',[]);
+  const idx = users.findIndex(u=>u.id===currentUser.id);
+  if (idx>-1) { users[idx].password=newP; currentUser.password=newP; LDB.set('users',users); }
+  clearForm(['cp-old','cp-new','cp-confirm']);
+  showToast('✅ Password change ho gaya!');
+}
+
+// ═══════════════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════════════
+function toCSV(headers, rows) {
+  const esc = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  return [headers.map(esc).join(','), ...rows.map(r=>r.map(esc).join(','))].join('\n');
+}
+function downloadCSV(content, filename) {
+  const blob = new Blob(['\ufeff'+content], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+function exportStudentsCSV() {
+  if (allStudents.length===0) { showToast('Koi data nahi export karne ke liye!', true); return; }
+  const csv = toCSV(['ID','Naam','Mobile','Email','Course','Batch','City','Status','Fees Status','Joining Date'],
+    allStudents.map(s=>[s.student_id,s.name,s.mobile,s.email,s.course,s.batch,s.city,s.status,s.fees_status,s.joined_date]));
+  downloadCSV(csv, 'Students_'+today()+'.csv');
+  showToast('✅ Students CSV download ho rahi hai!');
+}
+function exportLeadsCSV() {
+  if (allLeads.length===0) { showToast('Koi data nahi!', true); return; }
+  const csv = toCSV(['Naam','Mobile','Course Interest','Source','Stage','Budget','Counsellor','Notes'],
+    allLeads.map(l=>[l.name,l.mobile,l.course_interest,l.source,l.stage,l.budget,l.counsellor,l.notes]));
+  downloadCSV(csv, 'Leads_'+today()+'.csv');
+  showToast('✅ Leads CSV download ho rahi hai!');
+}
+function exportFeesCSV() {
+  if (allFees.length===0) { showToast('Koi data nahi!', true); return; }
+  const csv = toCSV(['Receipt No','Student','Course','Amount','Discount','Mode','Date','Remarks'],
+    allFees.map(f=>[f.receipt_no,f.student_name,f.course,f.amount,f.discount,f.payment_mode,f.payment_date,f.remarks]));
+  downloadCSV(csv, 'Fees_'+today()+'.csv');
+  showToast('✅ Fees CSV download ho rahi hai!');
+}
+function exportExpensesCSV() {
+  if (allExpenses.length===0) { showToast('Koi data nahi!', true); return; }
+  const csv = toCSV(['Category','Description','Amount','Mode','Date'],
+    allExpenses.map(e=>[e.category,e.description,e.amount,e.payment_mode,e.expense_date]));
+  downloadCSV(csv, 'Expenses_'+today()+'.csv');
+  showToast('✅ Expenses CSV download ho rahi hai!');
+}
+function exportAllCSV() {
+  exportStudentsCSV(); setTimeout(exportLeadsCSV,500); setTimeout(exportFeesCSV,1000);
+  showToast('✅ Sab reports download ho rahi hain!');
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+const avColors = ['av-b','av-g','av-a','av-p','av-t','av-r'];
+function avColor(name) { return avColors[(name?.charCodeAt(0)||0)%avColors.length]; }
+function fmtNum(n) { return n>=100000 ? (n/100000).toFixed(1)+'L' : n>=1000 ? (n/1000).toFixed(1)+'K' : Math.round(n).toString(); }
+function today() { return new Date().toLocaleDateString('en-IN').replace(/\//g,'-'); }
+function feesBadge(s) { return s==='Paid'?'bg':s==='Partial'?'ba':'br'; }
+function statusBadge(s) { return s==='Active'?'bg':s==='Completed'?'bp':s==='Dropped'?'br':'bgr'; }
+function stageBadge(s) { return s==='Converted'?'bg':s==='Interested'?'ba':s==='New'?'bb':s==='Lost'?'br':'bgr'; }
+function waMsg(phone) { if(phone) window.open('https://wa.me/91'+phone.replace(/\D/g,''),'_blank'); }
+function clearForm(ids) { ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; }); }
+
+function showToast(msg, isErr=false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = 'toast show' + (isErr?' err':'');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
+
+const pgTitles = {
+  dashboard:['Dashboard','Aaj ka overview'],
+  students:['Students','Sabhi students manage karo'],
+  leads:['Leads / CRM','Inquiries track karo'],
+  fees:['Fees','Collections aur receipts'],
+  batches:['Batches','Active batches'],
+  courses:['Courses','Course catalog'],
+  expenses:['Expenses','Kharche track karo'],
+  reports:['Reports','Data download karo'],
+  settings:['Settings','Configure karo']
+};
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  if(el) el.classList.add('active');
+  const info=pgTitles[id]||[id,''];
+  document.getElementById('tp-title').textContent=info[0];
+  document.getElementById('tp-sub').textContent=info[1];
+  if(id==='settings') loadSettings();
+}
+
+// Set today's date in fee form
+document.addEventListener('DOMContentLoaded', ()=>{
+  initTheme();
+  const td = new Date().toISOString().split('T')[0];
+  const fdate=document.getElementById('f-date'); if(fdate) fdate.value=td;
+  const qdate=document.getElementById('qf-date'); if(qdate) qdate.value=td;
+  const edate=document.getElementById('e-date'); if(edate) edate.value=td;
+  document.getElementById('lu').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('lp').focus(); });
+  document.getElementById('lp').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+  checkSession();
+});
+</script>
+</body>
+</html>
