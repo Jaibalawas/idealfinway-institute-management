@@ -57,7 +57,7 @@ body.light .topbar{box-shadow:0 1px 4px rgba(0,0,0,0.06);}
 body.light .fg input,body.light .fg select,body.light .fg textarea,body.light .sb input,.light .search-bar{background:#f8fafc;}
 
 /* SETUP BANNER */
-#setup-banner{background:linear-gradient(135deg,#1d4ed8,#7c3aed);padding:14px 24px;display:flex;align-items:center;gap:12px;font-size:13px;position:fixed;top:0;left:0;right:0;z-index:99999;}
+#setup-banner{background:linear-gradient(135deg,#1d4ed8,#7c3aed);padding:14px 24px;display:flex;align-items:center;gap:12px;font-size:13px;position:fixed;top:0;left:0;right:0;z-index:9000;}
 #setup-banner.hidden{display:none;}
 #setup-banner a{color:#fff;font-weight:700;text-decoration:underline;cursor:pointer;}
 
@@ -195,7 +195,7 @@ tbody tr:hover td{background:var(--bg3);}
 .ib.wh:hover{color:var(--green);border-color:var(--green);}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:none;align-items:center;justify-content:center;z-index:100000;padding:20px;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:26px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;animation:fi 0.2s ease;}
 .modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px;}
@@ -860,62 +860,82 @@ let supabaseReady = false;
 async function sbFetch(table, method='GET', body=null, params='') {
   if (!SUPABASE_URL || !SUPABASE_KEY) return null;
   const url = `${SUPABASE_URL}/rest/v1/${table}${params}`;
-  const opts = {
-    method,
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': method==='POST' ? 'return=representation' : ''
-    }
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
   };
-  if (body) opts.body = JSON.stringify(body);
+  if (method === 'POST') headers['Prefer'] = 'return=representation';
+  if (method === 'PATCH') headers['Prefer'] = 'return=representation';
+  const opts = { method, headers };
+  if (body && (method==='POST'||method==='PATCH')) opts.body = JSON.stringify(body);
   try {
     const r = await fetch(url, opts);
-    if (!r.ok) { const e = await r.text(); console.error(e); return null; }
-    if (method==='DELETE') return true;
+    if (method==='DELETE') return r.ok ? true : null;
+    if (!r.ok) {
+      const errText = await r.text();
+      console.error('Supabase error:', r.status, errText);
+      return null;
+    }
     const text = await r.text();
     return text ? JSON.parse(text) : [];
-  } catch(e) { console.error(e); return null; }
+  } catch(e) {
+    console.error('Fetch error:', e.message);
+    return null;
+  }
 }
 
 async function saveSupabaseConfig() {
-  const url = document.getElementById('cfg-url').value.trim().replace(/\/$/, '');
-  const key = document.getElementById('cfg-key').value.trim();
-  if (!url || !key) { showToast('URL aur Key dono required hain!', true); return; }
+  const urlEl = document.getElementById('cfg-url');
+  const keyEl = document.getElementById('cfg-key');
+  const url = (urlEl?.value||'').trim().replace(/\/$/, '');
+  const key = (keyEl?.value||'').trim();
 
-  // Test connection
+  if (!url || !key) { showToast('URL aur Key dono required hain!', true); return; }
+  if (!url.includes('supabase.co')) { showToast('❌ URL sahi nahi — https://xxxx.supabase.co hona chahiye!', true); return; }
+  if (!key.startsWith('eyJ')) { showToast('❌ Anon Key sahi nahi — eyJ... se shuru honi chahiye!', true); return; }
+
+  // Show loading
+  const connectBtn = document.querySelector('#modal-config .btn-p');
+  if (connectBtn) { connectBtn.innerHTML = '<span class="spin"></span> Testing...'; connectBtn.disabled = true; }
+
+  // Set temporarily for test
+  const oldUrl = SUPABASE_URL, oldKey = SUPABASE_KEY;
   SUPABASE_URL = url;
   SUPABASE_KEY = key;
+
   const test = await sbFetch('users', 'GET', null, '?select=id&limit=1');
 
+  // Restore button
+  if (connectBtn) { connectBtn.innerHTML = '<i class="fas fa-plug"></i> Connect & Test karein'; connectBtn.disabled = false; }
+
   if (test !== null) {
-    // Save permanently
     localStorage.setItem('sb_url', url);
     localStorage.setItem('sb_key', key);
     supabaseReady = true;
     closeModal('modal-config');
-
-    // Hide setup banner
     const banner = document.getElementById('setup-banner');
     if (banner) banner.classList.add('hidden');
-
-    // Update status badge in settings
     const badge = document.getElementById('db-status-badge');
-    const text = document.getElementById('db-status-text');
+    const statusText = document.getElementById('db-status-text');
     if (badge) { badge.className = 'badge bg'; badge.textContent = 'Connected ✓'; }
-    if (text) text.textContent = 'Cloud database — data permanent hai';
-
-    showToast('✅ Supabase connected! Data reload ho raha hai...');
-
-    // Reload all data from cloud
+    if (statusText) statusText.textContent = 'Cloud database — data permanent hai';
+    showToast('✅ Connected! Data load ho raha hai...');
     await loadAllData();
-    showToast('✅ Connected! Sab data load ho gaya.');
+    showToast('✅ Supabase connected! Sab data load ho gaya.');
   } else {
-    // Reset on failure
-    SUPABASE_URL = localStorage.getItem('sb_url') || '';
-    SUPABASE_KEY = localStorage.getItem('sb_key') || '';
-    showToast('❌ Connection fail! URL aur Anon Key check karein.', true);
+    SUPABASE_URL = oldUrl;
+    SUPABASE_KEY = oldKey;
+    showToast('❌ Connection fail! Neeche check karein.', true);
+    // Show detailed error
+    const errDiv = document.createElement('div');
+    errDiv.style.cssText = 'background:var(--red-bg);border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:10px 14px;border-radius:8px;font-size:12px;margin-top:10px;';
+    errDiv.innerHTML = '⚠️ <b>Possible reasons:</b><br>1. URL mein typo hai — copy button use karein<br>2. Anon key incomplete hai — poori key copy karein<br>3. Supabase project paused hai — supabase.com pe check karein<br>4. Tables nahi bani hain — SQL run karein pehle';
+    const footer = document.querySelector('#modal-config .modal-footer');
+    const existing = document.getElementById('conn-error');
+    if (existing) existing.remove();
+    errDiv.id = 'conn-error';
+    if (footer) footer.before(errDiv);
   }
 }
 
@@ -1968,7 +1988,23 @@ async function loadAllData() {
   updateCourseDropdowns();
   updateBatchDropdowns();
 }
-document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
+function openModal(id){
+  const m=document.getElementById(id);
+  if(!m){console.error('Modal not found:',id);return;}
+  // Close any other open modals first
+  document.querySelectorAll('.modal-overlay.open').forEach(x=>x.classList.remove('open'));
+  m.classList.add('open');
+  m.style.zIndex='10001';
+}
+function closeModal(id){
+  const m=document.getElementById(id);
+  if(m) m.classList.remove('open');
+}
+document.addEventListener('click',function(e){
+  if(e.target && e.target.classList.contains('modal-overlay')){
+    e.target.classList.remove('open');
+  }
+});
 
 const pgTitles = {
   dashboard:['Dashboard','Aaj ka overview'],
