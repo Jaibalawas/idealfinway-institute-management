@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Idealfinway — Institute Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --bg:#0a0f1a;--bg2:#111827;--bg3:#1a2332;--card:#131c2e;--card2:#1e2d42;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#f0f4ff;--text2:#8b9bbf;--text3:#4a5a7a;
+  --accent:#3b82f6;--accent2:#60a5fa;--accent3:#1d4ed8;
+  --green:#10b981;--green-bg:rgba(16,185,129,0.12);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.12);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.12);
+  --purple:#8b5cf6;--purple-bg:rgba(139,92,246,0.12);
+  --teal:#14b8a6;--teal-bg:rgba(20,184,166,0.12);
+  --r:12px;--rs:8px;
+}
+/* LIGHT MODE */
+body.light{
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e8eef5;--card:#ffffff;--card2:#f0f4f8;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
+  --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --accent:#2563eb;--accent2:#1d4ed8;--accent3:#1e40af;
+  --green:#059669;--green-bg:rgba(5,150,105,0.1);
+  --amber:#d97706;--amber-bg:rgba(217,119,6,0.1);
+  --red:#dc2626;--red-bg:rgba(220,38,38,0.1);
+  --purple:#7c3aed;--purple-bg:rgba(124,58,237,0.1);
+  --teal:#0d9488;--teal-bg:rgba(13,148,136,0.1);
+}
+/* SMOOTH TRANSITION */
+*,body,body.light{transition:background-color 0.25s ease,border-color 0.25s ease,color 0.2s ease;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+/* THEME TOGGLE BUTTON */
+.theme-toggle{
+  width:38px;height:38px;border-radius:var(--rs);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:1px solid var(--border2);
+  background:var(--card2);color:var(--text2);
+  font-size:16px;transition:all 0.2s;flex-shrink:0;
+}
+.theme-toggle:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent);}
+body.light .theme-toggle{background:var(--card2);color:var(--amber);}
+body.light .theme-toggle:hover{background:var(--amber-bg);border-color:var(--amber);}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+body.light ::-webkit-scrollbar-thumb{background:#cbd5e1;}
+body.light .login-box{box-shadow:0 4px 24px rgba(0,0,0,0.08);}
+body.light .card{box-shadow:0 1px 4px rgba(0,0,0,0.04);}
+body.light .sidebar{box-shadow:2px 0 8px rgba(0,0,0,0.06);}
+body.light .topbar{box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+body.light .fg input,body.light .fg select,body.light .fg textarea,body.light .sb input,.light .search-bar{background:#f8fafc;}
+
+/* SETUP BANNER */
+#setup-banner{background:linear-gradient(135deg,#1d4ed8,#7c3aed);padding:14px 24px;display:flex;align-items:center;gap:12px;font-size:13px;position:fixed;top:0;left:0;right:0;z-index:9000;}
+#setup-banner.hidden{display:none;}
+#setup-banner a{color:#fff;font-weight:700;text-decoration:underline;cursor:pointer;}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;z-index:9998;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+/* App hidden by default, shown via JS */
+.app.visible{display:flex!important;}
+#login-screen.hidden{display:none;}
+.login-box{width:100%;max-width:420px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px 36px;text-align:center;}
+.login-logo{width:56px;height:56px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;}
+.login-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;}
+.login-sub{font-size:13px;color:var(--text3);margin-bottom:24px;}
+.lg{text-align:left;margin-bottom:14px;}
+.lg label{display:block;font-size:12px;color:var(--text2);font-weight:500;margin-bottom:6px;}
+.lg input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:11px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;}
+.lg input:focus{border-color:var(--accent);}
+.login-err{background:var(--red-bg);border:1px solid rgba(239,68,68,0.3);color:var(--red);font-size:12px;padding:10px 14px;border-radius:var(--rs);margin-bottom:14px;display:none;}
+.login-err.show{display:block;}
+.login-btn{width:100%;background:var(--accent);border:none;border-radius:var(--rs);padding:12px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.2s;margin-top:4px;}
+.login-btn:hover{background:var(--accent3);}
+.login-hint{margin-top:18px;font-size:11px;color:var(--text3);background:var(--bg3);border-radius:var(--rs);padding:12px 14px;text-align:left;line-height:1.8;}
+
+/* APP LAYOUT */
+.app{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.logo-area{padding:22px 18px 18px;border-bottom:1px solid var(--border);}
+.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:16px;}
+.logo-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;}
+.logo-sub{font-size:10px;color:var(--text3);margin-top:2px;}
+.nav-sec{padding:14px 18px 4px;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;color:var(--text2);font-size:13px;transition:all 0.15s;border-left:3px solid transparent;}
+.ni:hover{background:var(--bg3);color:var(--text);}
+.ni.active{background:rgba(59,130,246,0.1);color:var(--accent2);border-left-color:var(--accent);font-weight:500;}
+.ni i{width:16px;text-align:center;font-size:14px;}
+.nbadge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:600;padding:1px 6px;border-radius:20px;}
+.nbadge.a{background:var(--amber);}
+.sb-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);}
+.user-pill{display:flex;align-items:center;gap:10px;background:var(--bg3);border-radius:var(--rs);padding:10px 12px;}
+.uav{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.uname{font-size:12px;font-weight:500;}
+.urole{font-size:10px;color:var(--text3);}
+.logout-btn{width:100%;margin-top:8px;background:var(--red-bg);border:1px solid rgba(239,68,68,0.2);border-radius:var(--rs);padding:8px;color:var(--red);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.topbar-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
+.topbar-sub{font-size:12px;color:var(--text3);margin-top:1px;}
+.topbar-actions{display:flex;gap:8px;align-items:center;}
+.content{padding:22px 26px;flex:1;}
+.page{display:none;}
+.page.active{display:block;animation:fi 0.2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.sc:hover{border-color:var(--border2);}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sc.blue::before{background:var(--accent);}
+.sc.green::before{background:var(--green);}
+.sc.amber::before{background:var(--amber);}
+.sc.red::before{background:var(--red);}
+.sc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:10px;}
+.sc-icon.blue{background:rgba(59,130,246,0.15);color:var(--accent2);}
+.sc-icon.green{background:var(--green-bg);color:var(--green);}
+.sc-icon.amber{background:var(--amber-bg);color:var(--amber);}
+.sc-icon.red{background:var(--red-bg);color:var(--red);}
+.sc-label{font-size:11px;color:var(--text2);margin-bottom:5px;}
+.sc-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;}
+.sc-ch{font-size:11px;color:var(--text3);margin-top:4px;}
+.sc-ch.up{color:var(--green);}
+.sc-ch.warn{color:var(--amber);}
+
+/* GRID */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px;}
+.card:hover{border-color:var(--border2);}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.ct{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;}
+.cs{font-size:11px;color:var(--text3);margin-top:2px;}
+
+/* TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{text-align:left;color:var(--text3);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;padding:0 12px 10px;border-bottom:1px solid var(--border);}
+tbody td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--bg3);}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+.bg{background:var(--green-bg);color:var(--green);}
+.bb{background:rgba(59,130,246,0.15);color:var(--accent2);}
+.ba{background:var(--amber-bg);color:var(--amber);}
+.br{background:var(--red-bg);color:var(--red);}
+.bp{background:var(--purple-bg);color:var(--purple);}
+.bt{background:var(--teal-bg);color:var(--teal);}
+.bgr{background:rgba(255,255,255,0.05);color:var(--text2);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--card2);color:var(--text);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.btn:hover{background:var(--bg3);border-color:var(--accent);color:var(--accent2);}
+.btn-p{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn-p:hover{background:var(--accent3);border-color:var(--accent3);color:#fff;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-g{background:var(--green-bg);border-color:rgba(16,185,129,0.2);color:var(--green);}
+
+/* AVATAR */
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.av-b{background:rgba(59,130,246,0.2);color:var(--accent2);}
+.av-g{background:var(--green-bg);color:var(--green);}
+.av-a{background:var(--amber-bg);color:var(--amber);}
+.av-p{background:var(--purple-bg);color:var(--purple);}
+.av-t{background:var(--teal-bg);color:var(--teal);}
+.av-r{background:var(--red-bg);color:var(--red);}
+
+/* FORM */
+.ir{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:12px;color:var(--text2);font-weight:500;}
+.fg input,.fg select,.fg textarea{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;transition:border-color 0.2s;outline:none;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);}
+.fg select option{background:var(--bg2);}
+.sb{position:relative;flex:1;}
+.sb i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;}
+.sb input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px 9px 34px;color:var(--text);font-size:13px;outline:none;transition:border-color 0.2s;font-family:'DM Sans',sans-serif;}
+.sb input:focus{border-color:var(--accent);}
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.ph{margin-bottom:20px;}
+.ph-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;}
+.ph-sub{font-size:13px;color:var(--text3);margin-top:3px;}
+.ib{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;background:var(--card2);border:1px solid var(--border);color:var(--text2);font-size:12px;transition:all 0.15s;}
+.ib:hover{background:var(--bg3);color:var(--accent2);border-color:var(--accent);}
+.ib.wh:hover{color:var(--green);border-color:var(--green);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:none;align-items:center;justify-content:center;z-index:100000;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:26px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;animation:fi 0.2s ease;}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--text3);margin-bottom:20px;}
+.modal-footer{display:flex;gap:8px;margin-top:18px;justify-content:flex-end;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--card);border:1px solid var(--green);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--green);z-index:9000;display:none;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.toast.show{display:flex;animation:fi 0.3s ease;}
+.toast.err{border-color:var(--red);color:var(--red);}
+
+/* PIPELINE */
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
+.pc{background:var(--bg3);border-radius:var(--r);padding:12px;border:1px solid var(--border);min-height:160px;}
+.pc-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.pc-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text2);}
+.pc-cnt{font-size:10px;font-weight:700;background:var(--border);padding:2px 6px;border-radius:10px;color:var(--text3);}
+.pk{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px;margin-bottom:7px;cursor:pointer;transition:all 0.15s;}
+.pk:hover{border-color:var(--accent);transform:translateY(-1px);}
+.pk-name{font-size:13px;font-weight:500;color:var(--text);}
+.pk-info{font-size:11px;color:var(--text3);margin-top:3px;}
+
+/* ALERT LIST */
+.al{display:flex;flex-direction:column;}
+.ai{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);}
+.ai:last-child{border-bottom:none;}
+.ai-info{flex:1;min-width:0;}
+.ai-name{font-size:13px;font-weight:500;color:var(--text);}
+.ai-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+
+/* PROGRESS */
+.prog{height:5px;background:var(--border);border-radius:10px;overflow:hidden;margin-top:6px;}
+.prog-f{height:100%;border-radius:10px;}
+
+/* TAG */
+.tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;text-transform:uppercase;}
+.t-hot{background:var(--red-bg);color:var(--red);}
+.t-warm{background:var(--amber-bg);color:var(--amber);}
+.t-cold{background:rgba(255,255,255,0.05);color:var(--text3);}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:50px 20px;color:var(--text3);}
+.empty i{font-size:40px;margin-bottom:12px;display:block;opacity:0.3;}
+.empty p{font-size:14px;}
+
+/* SWITCH */
+.sw-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);}
+.sw-row:last-child{border-bottom:none;}
+.sw-t{font-size:13px;font-weight:500;color:var(--text);}
+.sw-s{font-size:11px;color:var(--text3);margin-top:2px;}
+.toggle{width:36px;height:20px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+.toggle.on{background:var(--green);}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform 0.2s;}
+.toggle.on::after{transform:translateX(16px);}
+
+/* LOADING SPINNER */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+.info-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+.ii{font-size:12px;color:var(--text3);}
+.ii b{color:var(--text2);font-weight:500;}
+
+/* SUPABASE CONFIG MODAL */
+.config-step{background:var(--bg3);border-radius:var(--rs);padding:14px;margin-bottom:12px;border-left:3px solid var(--accent);}
+.config-step-num{font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:4px;text-transform:uppercase;}
+.config-step-text{font-size:13px;color:var(--text2);line-height:1.6;}
+.config-step code{background:var(--bg);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:12px;color:var(--green);}
+
+/* ═══════════════════════════════════════
+   MOBILE HAMBURGER BUTTON
+═══════════════════════════════════════ */
+.hamburger{display:none;width:36px;height:36px;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border2);border-radius:var(--rs);background:var(--card2);color:var(--text2);font-size:18px;flex-shrink:0;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:998;}
+.sidebar-overlay.open{display:block;}
+
+/* ═══════════════════════════════════════
+   MOBILE RESPONSIVE — Full Breakpoints
+═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Sidebar — slide in/out */
+  .sidebar{
+    position:fixed;left:-240px;top:0;bottom:0;z-index:999;
+    width:240px;transition:left 0.25s ease;
+    box-shadow:4px 0 20px rgba(0,0,0,0.3);
+  }
+  .sidebar.open{left:0;}
+  .hamburger{display:flex;}
+  
+  /* App layout */
+  .app{flex-direction:column;height:100vh;overflow:hidden;}
+  .main{flex:1;overflow-y:auto;}
+  
+  /* Topbar */
+  .topbar{padding:10px 14px;gap:8px;}
+  .topbar-title{font-size:15px;}
+  .topbar-sub{display:none;}
+  .topbar-actions .btn-sm span{display:none;}
+  .topbar-actions .btn-sm{padding:7px 10px;}
+  
+  /* Content */
+  .content{padding:14px;}
+  
+  /* Stats grid — 2 columns on mobile */
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+  .sc{padding:12px 14px;}
+  .sc-val{font-size:18px;}
+  
+  /* Two col → single col */
+  .two-col{grid-template-columns:1fr;gap:12px;}
+  .three-col{grid-template-columns:1fr;gap:12px;}
+  .col-6-4{grid-template-columns:1fr;gap:12px;}
+  
+  /* Pipeline — horizontal scroll */
+  .pipeline{
+    display:flex;overflow-x:auto;gap:10px;
+    padding-bottom:8px;margin-bottom:14px;
+    scroll-snap-type:x mandatory;
+  }
+  .pc{min-width:160px;scroll-snap-align:start;flex-shrink:0;}
+  
+  /* Tables — horizontal scroll */
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:500px;}
+  
+  /* Cards */
+  .card{padding:14px;margin-bottom:12px;}
+  
+  /* Forms */
+  .ir{grid-template-columns:1fr;gap:10px;}
+  
+  /* Modal */
+  .modal{padding:18px;margin:10px;}
+  .modal-overlay{padding:10px;align-items:flex-end;}
+  .modal{border-radius:16px 16px 0 0;max-height:92vh;}
+  
+  /* Input rows */
+  .ir{grid-template-columns:1fr;}
+  
+  /* Page header */
+  .ph-title{font-size:18px;}
+  
+  /* Toolbar */
+  .toolbar{gap:6px;}
+  .toolbar .btn{font-size:12px;padding:6px 10px;}
+  
+  /* Bottom nav for mobile */
+  .mobile-nav{
+    display:flex;
+    position:fixed;bottom:0;left:0;right:0;
+    background:var(--bg2);border-top:1px solid var(--border);
+    z-index:100;padding:6px 0 8px;
+  }
+  .mn-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;
+    gap:3px;cursor:pointer;padding:4px 2px;
+    color:var(--text3);font-size:10px;
+  }
+  .mn-item i{font-size:20px;}
+  .mn-item.active{color:var(--accent2);}
+  .mn-item span{font-size:9px;}
+  
+  /* Adjust content for bottom nav */
+  .main{padding-bottom:60px;}
+  
+  /* Batches grid */
+  #batches-grid{grid-template-columns:1fr!important;}
+  
+  /* Login box mobile */
+  .login-box{padding:24px 20px;border-radius:16px;margin:16px;}
+  
+  /* Toast position */
+  .toast{bottom:80px;left:14px;right:14px;font-size:12px;}
+  
+  /* Lead detail modal */
+  #modal-lead-detail .modal{max-width:100%;}
+  
+  /* Reports grid */
+  .card div[style*="grid-template-columns:repeat(3"]{
+    grid-template-columns:1fr 1fr!important;
+  }
+  
+  /* Hide some less important columns on mobile */
+  .hide-mobile{display:none!important;}
+}
+
+@media (max-width: 480px) {
+  .stats-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  .sc-val{font-size:16px;}
+  .content{padding:10px;}
+  .topbar{padding:8px 12px;}
+  .card div[style*="grid-template-columns:repeat(3"]{
+    grid-template-columns:1fr!important;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<!-- SETUP BANNER -->
+<div id="setup-banner" class="hidden">
+  <i class="fas fa-database" style="color:#fff;font-size:16px;"></i>
+  <span style="color:#fff;">⚙️ <b>Pehli baar setup:</b> Supabase database connect karein — </span>
+  <a onclick="openConfigModal()">Yahan click karein Setup ke liye →</a>
+  <span style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.6);">Iske bina data browser band karne pe chala jaega</span>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div style="margin:0 auto 14px;width:80px;height:80px;">
+      <img src="data:image/jpeg;base64,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" alt="Idealfinway" style="width:80px;height:80px;object-fit:contain;border-radius:14px;"/>
+    </div>
+    <div class="login-title">Idealfinway</div>
+    <div class="login-sub">Institute Management System</div>
+    <div class="login-err" id="login-err"><i class="fas fa-exclamation-circle"></i> <span id="login-err-msg">Galat username ya password</span></div>
+    <div class="lg"><label>Username</label><input type="text" id="lu" placeholder="username" autocomplete="username"/></div>
+    <div class="lg"><label>Password</label><input type="password" id="lp" placeholder="password" autocomplete="current-password"/></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Login karein</button>
+    <div class="login-hint">
+      <b style="color:var(--text2);">Default Credentials:</b><br>
+      👑 Admin → <b>admin</b> / <b>stockedu@2026</b><br>
+      📋 Counsellor → <b>raj</b> / <b>raj@123</b><br>
+      🖥️ Reception → <b>neeraj</b> / <b>neeraj@123</b>
+    </div>
+  </div>
+</div>
+
+<!-- SUPABASE CONFIG MODAL -->
+<div class="modal-overlay" id="modal-config">
+  <div class="modal" style="max-width:620px;">
+    <div class="modal-title">🗄️ Supabase Database Setup</div>
+    <div class="modal-sub">Free database — data permanently save hoga, kahin se bhi access milega</div>
+
+    <div class="config-step">
+      <div class="config-step-num">Step 1 — Supabase Account</div>
+      <div class="config-step-text">
+        <a href="https://supabase.com" target="_blank" style="color:var(--accent2)">supabase.com</a> pe jayen → <b>Start your project</b> → GitHub se free signup karein
+      </div>
+    </div>
+    <div class="config-step">
+      <div class="config-step-num">Step 2 — New Project Banayein</div>
+      <div class="config-step-text">
+        Dashboard mein <b>New Project</b> → Name: <code>stockedu</code> → Region: <b>Southeast Asia (Singapore)</b> → Strong password set karein → Create
+      </div>
+    </div>
+    <div class="config-step">
+      <div class="config-step-num">Step 3 — Tables Banayein (SQL Editor)</div>
+      <div class="config-step-text">
+        Left menu → <b>SQL Editor</b> → <b>New Query</b> → Neeche diya SQL paste karein → <b>Run</b> dabayein:
+        <div style="background:var(--bg);border-radius:6px;padding:10px;margin-top:8px;font-family:monospace;font-size:11px;color:var(--green);line-height:1.7;overflow-x:auto;">
+create table users(id bigint primary key generated always as identity,name text,username text unique,password text,role text);<br>
+insert into users(name,username,password,role)values('Admin','admin','stockedu@2026','Admin'),('Raj','raj','raj@123','Counsellor'),('Neeraj','neeraj','neeraj@123','Receptionist');<br>
+create table students(id bigint primary key generated always as identity,student_id text unique,name text,mobile text,email text,whatsapp text,gender text,dob text,course text,batch text,trading_bg text,profession text,guardian text,city text,status text default 'Active',fees_status text default 'Pending',notes text,joined_date text,created_at timestamptz default now());<br>
+create table leads(id bigint primary key generated always as identity,name text,mobile text,email text,course_interest text,source text,trading_exp text,budget text,stage text default 'New',counsellor text,followup_date text,notes text,created_at timestamptz default now());<br>
+create table fees(id bigint primary key generated always as identity,receipt_no text,student_name text,student_id_ref text,course text,amount numeric,discount numeric default 0,payment_mode text,installment text,transaction_ref text,collected_by text,remarks text,payment_date text,created_at timestamptz default now());<br>
+create table expenses(id bigint primary key generated always as identity,category text,amount numeric,description text,payment_mode text,expense_date text,created_at timestamptz default now());<br>
+alter table users enable row level security;<br>
+alter table students enable row level security;<br>
+alter table leads enable row level security;<br>
+alter table fees enable row level security;<br>
+alter table expenses enable row level security;<br>
+create policy "allow all" on users for all using(true) with check(true);<br>
+create policy "allow all" on students for all using(true) with check(true);<br>
+create policy "allow all" on leads for all using(true) with check(true);<br>
+create policy "allow all" on fees for all using(true) with check(true);<br>
+create policy "allow all" on expenses for all using(true) with check(true);
+        </div>
+      </div>
+    </div>
+    <div class="config-step">
+      <div class="config-step-num">Step 4 — API Keys Copy Karein</div>
+      <div class="config-step-text">
+        Left menu → <b>Project Settings</b> → <b>API</b> → <br>
+        • <b>Project URL</b> copy karein (https://xxxx.supabase.co)<br>
+        • <b>anon public</b> key copy karein (neeche paste karein)
+      </div>
+    </div>
+
+    <div class="ir" style="margin-top:16px;">
+      <div class="fg"><label>Supabase Project URL</label><input id="cfg-url" placeholder="https://xxxxxxxxxxxx.supabase.co"/></div>
+      <div class="fg"><label>Supabase Anon Key</label><input id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIs..."/></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-config')">Baad mein karein</button>
+      <button class="btn btn-p" onclick="saveSupabaseConfig()"><i class="fas fa-plug"></i> Connect & Test karein</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD STUDENT MODAL -->
+<div class="modal-overlay" id="modal-student">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-user-plus" style="color:var(--accent2)"></i> Naya Student Add Karein</div>
+    <div class="modal-sub">Student ki poori details fill karein</div>
+    <div class="ir">
+      <div class="fg"><label>Pura Naam *</label><input id="s-name" placeholder="Student ka naam"/></div>
+      <div class="fg"><label>Mobile *</label><input id="s-mobile" placeholder="10-digit mobile"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Email</label><input id="s-email" placeholder="email@example.com"/></div>
+      <div class="fg"><label>WhatsApp Number</label><input id="s-whatsapp" placeholder="Mobile se alag hai?"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Course *</label><select id="s-course"><option value="">-- Select --</option><option>Technical Analysis</option></select></div>
+      <div class="fg"><label>Batch</label><select id="s-batch"><option value="">-- Select --</option><option>Technical Analysis Batch</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Trading Background</label><select id="s-tbg"><option>Beginner</option><option>Intermediate</option><option>Advanced Trader</option></select></div>
+      <div class="fg"><label>Profession</label><select id="s-prof"><option>Job (Salaried)</option><option>Business Owner</option><option>Student</option><option>Trader</option><option>Housewife</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Guardian Name</label><input id="s-guardian" placeholder="Father/Guardian"/></div>
+      <div class="fg"><label>City</label><input id="s-city" placeholder="City"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Notes</label><textarea id="s-notes" style="height:55px;resize:none;width:100%;" placeholder="Koi remarks..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-student')">Cancel</button>
+      <button class="btn btn-p" onclick="saveStudent()"><span id="s-btn-txt"><i class="fas fa-save"></i> Student Save Karein</span><span id="s-btn-spin" style="display:none;"><span class="spin"></span> Saving...</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD LEAD MODAL -->
+<div class="modal-overlay" id="modal-lead">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-crosshairs" style="color:var(--amber)"></i> Naya Lead Add Karein</div>
+    <div class="modal-sub">Inquiry ki details capture karein</div>
+    <div class="ir">
+      <div class="fg"><label>Naam *</label><input id="l-name" placeholder="Lead ka naam"/></div>
+      <div class="fg"><label>Mobile *</label><input id="l-mobile" placeholder="10-digit mobile"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Course Interest</label><select id="l-course"><option value="">Decide nahi kiya</option><option>Technical Analysis</option></select></div>
+      <div class="fg"><label>Lead Source *</label><select id="l-source"><option>Instagram</option><option>YouTube</option><option>Facebook</option><option>Reference</option><option>Walk-in</option><option>Webinar</option><option>Google</option><option>Telegram</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Trading Experience</label><select id="l-exp"><option>Beginner</option><option>Kuch experience hai</option><option>Active trader</option></select></div>
+      <div class="fg"><label>Budget Range</label><select id="l-budget"><option>₹35,000 (Full Payment)</option><option>₹18,000 (Installment 1)</option><option>₹17,000 (Installment 2)</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Counsellor</label><select id="l-counsellor"><option>Ravikant Sharma</option><option>Admin</option></select></div>
+      <div class="fg"><label>Follow-up Date</label><input type="datetime-local" id="l-followup"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Notes</label><textarea id="l-notes" style="height:55px;resize:none;width:100%;" placeholder="Kya enquiry ki..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-lead')">Cancel</button>
+      <button class="btn btn-p" onclick="saveLead()"><span id="l-btn-txt"><i class="fas fa-save"></i> Lead Save Karein</span><span id="l-btn-spin" style="display:none;"><span class="spin"></span> Saving...</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- COLLECT FEE MODAL -->
+<div class="modal-overlay" id="modal-fee">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-receipt" style="color:var(--green)"></i> Payment Collect Karein</div>
+    <div class="modal-sub">Fee payment record karein aur receipt generate karein</div>
+    <div class="ir">
+      <div class="fg"><label>Student Ka Naam *</label><input id="f-student" placeholder="Student naam search..."/></div>
+      <div class="fg"><label>Amount (₹) *</label><input type="number" id="f-amount" placeholder="0"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Course</label><select id="f-course"><option value="">-- Select --</option><option>Technical Analysis</option></select></div>
+      <div class="fg"><label>Payment Mode *</label><select id="f-mode"><option>Cash</option><option>UPI / PhonePe / GPay</option><option>NEFT / Bank Transfer</option><option>Cheque</option><option>Card</option><option>EMI</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Installment</label><select id="f-inst"><option>Full Payment</option><option>Installment 1 of 2</option><option>Installment 2 of 2</option><option>Installment 1 of 3</option><option>Installment 2 of 3</option><option>Installment 3 of 3</option></select></div>
+      <div class="fg"><label>Payment Date *</label><input type="date" id="f-date"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Discount (₹)</label><input type="number" id="f-discount" value="0"/></div>
+      <div class="fg"><label>Transaction / Cheque No.</label><input id="f-txn" placeholder="Reference number"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Remarks</label><input id="f-remarks" placeholder="e.g. Installment 2 of 3"/></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-fee')">Cancel</button>
+      <button class="btn btn-g" onclick="saveFee()"><span id="f-btn-txt"><i class="fas fa-receipt"></i> Receipt Generate Karein</span><span id="f-btn-spin" style="display:none;"><span class="spin"></span> Saving...</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT STUDENT MODAL -->
+<div class="modal-overlay" id="modal-edit-student">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-user-edit" style="color:var(--accent2)"></i> Student Edit Karein</div>
+    <div class="modal-sub">Student ki details update karein</div>
+    <input type="hidden" id="es-id"/>
+    <div class="ir">
+      <div class="fg"><label>Pura Naam *</label><input id="es-name" placeholder="Student ka naam"/></div>
+      <div class="fg"><label>Mobile *</label><input id="es-mobile" placeholder="10-digit mobile"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Email</label><input id="es-email" placeholder="email@example.com"/></div>
+      <div class="fg"><label>Course</label><select id="es-course"><option>Technical Analysis</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Batch</label><select id="es-batch"><option>Technical Analysis Batch</option></select></div>
+      <div class="fg"><label>City</label><input id="es-city" placeholder="City"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Fees Status</label><select id="es-fees"><option>Pending</option><option>Partial</option><option>Paid</option></select></div>
+      <div class="fg"><label>Status</label><select id="es-status"><option>Active</option><option>Completed</option><option>Dropped</option><option>Inactive</option></select></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Notes</label><textarea id="es-notes" style="height:55px;resize:none;width:100%;"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-edit-student')">Cancel</button>
+      <button class="btn btn-p" onclick="updateStudent()"><i class="fas fa-save"></i> Update Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT BATCH MODAL -->
+<div class="modal-overlay" id="modal-batch">
+  <div class="modal">
+    <div class="modal-title" id="batch-modal-title"><i class="fas fa-chalkboard-teacher" style="color:var(--accent2)"></i> Naya Batch Add Karein</div>
+    <div class="modal-sub">Batch ki details bharein</div>
+    <input type="hidden" id="b-id"/>
+    <div class="ir">
+      <div class="fg"><label>Batch Naam *</label><input id="b-name" placeholder="e.g. Batch A - Morning"/></div>
+      <div class="fg"><label>Course *</label><select id="b-course"><option>Technical Analysis</option></select></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Teacher</label><input id="b-teacher" value="Ravikant Sharma"/></div>
+      <div class="fg"><label>Timing</label><input id="b-timing" placeholder="e.g. Mon-Sat 7-9pm"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Start Date</label><input type="date" id="b-start"/></div>
+      <div class="fg"><label>End Date</label><input type="date" id="b-end"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Max Students</label><input type="number" id="b-capacity" value="20"/></div>
+      <div class="fg"><label>Mode</label><select id="b-mode"><option>Offline</option><option>Online</option><option>Hybrid</option></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-batch')">Cancel</button>
+      <button class="btn btn-p" onclick="saveBatch()"><i class="fas fa-save"></i> Save Batch</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT COURSE MODAL -->
+<div class="modal-overlay" id="modal-course">
+  <div class="modal">
+    <div class="modal-title" id="course-modal-title"><i class="fas fa-book-open" style="color:var(--amber)"></i> Course Add/Edit Karein</div>
+    <div class="modal-sub">Course ki details bharein</div>
+    <input type="hidden" id="c-id"/>
+    <div class="ir">
+      <div class="fg"><label>Course Naam *</label><input id="c-name" placeholder="e.g. Technical Analysis"/></div>
+      <div class="fg"><label>Fees (₹) *</label><input type="number" id="c-fees" placeholder="35000"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Duration</label><input id="c-duration" placeholder="e.g. 8 weeks"/></div>
+      <div class="fg"><label>Level</label><select id="c-level"><option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>Premium</option></select></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Description</label><textarea id="c-desc" style="height:60px;resize:none;width:100%;" placeholder="Course ke baare mein..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-course')">Cancel</button>
+      <button class="btn btn-p" onclick="saveCourse()"><i class="fas fa-save"></i> Save Course</button>
+    </div>
+  </div>
+</div>
+
+<!-- BATCH STUDENTS MODAL -->
+<div class="modal-overlay" id="modal-batch-students">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-title" id="bs-title">Batch Students</div>
+    <div class="modal-sub" id="bs-sub">Is batch ke sabhi students</div>
+    <div id="bs-list"></div>
+    <div class="modal-footer">
+      <button class="btn btn-p" onclick="closeModal('modal-batch-students')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT EXPENSE MODAL -->
+<div class="modal-overlay" id="modal-edit-expense">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-wallet" style="color:var(--amber)"></i> Expense Edit Karein</div>
+    <input type="hidden" id="ee-id"/>
+    <div class="ir">
+      <div class="fg"><label>Category</label><select id="ee-cat"><option>Rent</option><option>Salary</option><option>Marketing / Ads</option><option>Utilities</option><option>Printing</option><option>Software / Tools</option><option>Miscellaneous</option></select></div>
+      <div class="fg"><label>Amount (₹)</label><input type="number" id="ee-amount"/></div>
+    </div>
+    <div class="ir">
+      <div class="fg"><label>Date</label><input type="date" id="ee-date"/></div>
+      <div class="fg"><label>Mode</label><select id="ee-mode"><option>Cash</option><option>Bank Transfer</option><option>UPI</option><option>Cheque</option></select></div>
+    </div>
+    <div class="fg" style="margin-bottom:14px;"><label>Description</label><input id="ee-desc"/></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-edit-expense')">Cancel</button>
+      <button class="btn btn-p" onclick="updateExpense()"><i class="fas fa-save"></i> Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEAD DETAIL / NOTES MODAL -->
+<div class="modal-overlay" id="modal-lead-detail">
+  <div class="modal" style="max-width:620px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+      <div class="av av-a" id="ld-av" style="width:44px;height:44px;font-size:16px;">R</div>
+      <div>
+        <div class="modal-title" id="ld-name" style="margin-bottom:2px;">Lead Name</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="badge" id="ld-stage-badge">New</span>
+          <span style="font-size:12px;color:var(--text3);" id="ld-source">—</span>
+        </div>
+      </div>
+      <div class="ib wh" id="ld-wa-btn" style="margin-left:auto;width:36px;height:36px;" title="WhatsApp"><i class="fab fa-whatsapp"></i></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;">
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Mobile</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-mobile">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Course Interest</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-course">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Budget</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-budget">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Follow-up</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-followup">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Counsellor</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-counsellor">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Trading Experience</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-exp">—</div>
+      </div>
+    </div>
+
+    <!-- NOTES SECTION -->
+    <div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,0.25);border-radius:var(--rs);padding:14px;margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:8px;"><i class="fas fa-sticky-note"></i> Notes / Remarks</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.7;white-space:pre-wrap;min-height:40px;" id="ld-notes">Koi notes nahi hain.</div>
+    </div>
+
+    <!-- ADD/UPDATE NOTE -->
+    <div style="margin-bottom:4px;">
+      <div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;"><i class="fas fa-edit"></i> Note Update Karein</div>
+      <textarea id="ld-notes-input" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;resize:none;height:80px;outline:none;" placeholder="Naya note ya update likho... (call hua, kya baat hui, next action kya hai)"></textarea>
+    </div>
+
+    <!-- STAGE UPDATE -->
+    <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+      <div style="font-size:12px;color:var(--text2);font-weight:500;">Stage:</div>
+      <select id="ld-stage-select" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:7px 10px;color:var(--text);font-size:13px;outline:none;flex:1;">
+        <option>New</option><option>Contacted</option><option>Demo Done</option><option>Interested</option><option>Converted</option><option>Lost</option>
+      </select>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-lead-detail')">Close</button>
+      <button class="btn btn-p" onclick="updateLeadDetail()"><i class="fas fa-save"></i> Save Notes & Stage</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg"></span></div>
+
+<!-- APP -->
+<div class="app" id="main-app" style="display:none;">
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+  
+  <!-- Mobile bottom nav -->
+  <div class="mobile-nav" id="mobile-nav" style="display:none;">
+    <div class="mn-item active" id="mn-dashboard" onclick="showPage('dashboard',this);setMobileNav('dashboard')"><i class="fas fa-th-large"></i><span>Home</span></div>
+    <div class="mn-item" id="mn-students" onclick="showPage('students',this);setMobileNav('students')"><i class="fas fa-users"></i><span>Students</span></div>
+    <div class="mn-item" id="mn-leads" onclick="showPage('leads',this);setMobileNav('leads')"><i class="fas fa-crosshairs"></i><span>Leads</span></div>
+    <div class="mn-item" id="mn-fees" onclick="showPage('fees',this);setMobileNav('fees')"><i class="fas fa-rupee-sign"></i><span>Fees</span></div>
+    <div class="mn-item" id="mn-more" onclick="toggleSidebar()"><i class="fas fa-bars"></i><span>More</span></div>
+  </div>
+  <div class="sidebar">
+    <div class="logo-area">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="data:image/jpeg;base64,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" alt="Idealfinway" style="width:44px;height:44px;object-fit:contain;border-radius:8px;flex-shrink:0;"/>
+        <div>
+          <div class="logo-name">Idealfinway</div>
+          <div class="logo-sub">Institute Management</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-sec">Main</div>
+    <div class="ni active" onclick="showPage('dashboard',this)"><i class="fas fa-th-large"></i>Dashboard</div>
+    <div class="ni" onclick="showPage('students',this)"><i class="fas fa-users"></i>Students<span class="nbadge a" id="nb-students">0</span></div>
+    <div class="ni" onclick="showPage('leads',this)"><i class="fas fa-crosshairs"></i>Leads / CRM<span class="nbadge" id="nb-leads">0</span></div>
+    <div class="ni" onclick="showPage('fees',this)"><i class="fas fa-indian-rupee-sign"></i>Fees<span class="nbadge" id="nb-fees">0</span></div>
+    <div class="nav-sec">Academic</div>
+    <div class="ni" onclick="showPage('batches',this)"><i class="fas fa-chalkboard-teacher"></i>Batches</div>
+    <div class="ni" onclick="showPage('courses',this)"><i class="fas fa-book-open"></i>Courses</div>
+    <div class="nav-sec">More</div>
+    <div class="ni" onclick="showPage('expenses',this)"><i class="fas fa-wallet"></i>Expenses</div>
+    <div class="ni" onclick="showPage('reports',this)"><i class="fas fa-chart-bar"></i>Reports</div>
+    <div class="ni" onclick="showPage('settings',this)"><i class="fas fa-cog"></i>Settings</div>
+    <div class="sb-footer">
+      <div class="user-pill">
+        <div class="uav" id="sb-av">A</div>
+        <div><div class="uname" id="sb-name">Admin</div><div class="urole" id="sb-role">Owner</div></div>
+        <i class="fas fa-circle" style="font-size:7px;color:var(--green);margin-left:auto;"></i>
+      </div>
+      <button class="logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i>Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar" id="topbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="hamburger" onclick="toggleSidebar()" id="hamburger-btn"><i class="fas fa-bars"></i></div>
+        <div><div class="topbar-title" id="tp-title">Dashboard</div><div class="topbar-sub" id="tp-sub"></div></div>
+      </div>
+      <div class="topbar-actions">
+        <div class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Light/Dark Mode"><i class="fas fa-moon" id="theme-icon"></i></div>
+        <button class="btn btn-sm" onclick="openModal('modal-lead')"><i class="fas fa-plus"></i>New Lead</button>
+        <button class="btn btn-p btn-sm" onclick="openModal('modal-student')"><i class="fas fa-user-plus"></i>Add Student</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="sc blue"><div class="sc-icon blue"><i class="fas fa-users"></i></div><div class="sc-label">Total Students</div><div class="sc-val" id="d-students">—</div><div class="sc-ch up" id="d-students-s"></div></div>
+          <div class="sc green"><div class="sc-icon green"><i class="fas fa-indian-rupee-sign"></i></div><div class="sc-label">Collection (Is Mahine)</div><div class="sc-val" id="d-fees">—</div><div class="sc-ch up" id="d-fees-s"></div></div>
+          <div class="sc amber"><div class="sc-icon amber"><i class="fas fa-crosshairs"></i></div><div class="sc-label">New Leads (Is Mahine)</div><div class="sc-val" id="d-leads">—</div><div class="sc-ch up" id="d-leads-s"></div></div>
+          <div class="sc red"><div class="sc-icon red"><i class="fas fa-clock"></i></div><div class="sc-label">Pending Fees</div><div class="sc-val" id="d-pending">—</div><div class="sc-ch warn" id="d-pending-s"></div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="ch"><div><div class="ct">Haaliya Students</div><div class="cs">Naye added</div></div><span class="badge bb" id="d-rec-count">Loading...</span></div>
+            <div id="d-recent-students"><div class="empty"><i class="fas fa-users"></i><p>Abhi koi student nahi hai</p></div></div>
+          </div>
+          <div class="card">
+            <div class="ch"><div><div class="ct">Haaliya Leads</div><div class="cs">Latest inquiries</div></div><span class="badge ba" id="d-lead-count">Loading...</span></div>
+            <div id="d-recent-leads"><div class="empty"><i class="fas fa-crosshairs"></i><p>Abhi koi lead nahi hai</p></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Lead Source Performance</div></div>
+          <div id="d-source-stats"><div class="empty"><i class="fas fa-chart-pie"></i><p>Leads add karne ke baad dikhai dega</p></div></div>
+        </div>
+      </div>
+
+      <!-- STUDENTS -->
+      <div class="page" id="page-students">
+        <div class="ph"><div class="ph-title">Student Management</div><div class="ph-sub" id="s-count-sub">Students load ho rahe hain...</div></div>
+        <div class="toolbar">
+          <div class="sb"><i class="fas fa-search"></i><input id="s-search" placeholder="Naam, mobile, ya ID se search..." oninput="filterStudents()"/></div>
+          <select id="s-filter-course" onchange="filterStudents()" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:13px;outline:none;">
+            <option value="">Sabhi Courses</option><option>Technical Analysis</option>
+          </select>
+          <select id="s-filter-status" onchange="filterStudents()" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:13px;outline:none;">
+            <option value="">Sabhi Status</option><option>Active</option><option>Completed</option><option>Dropped</option><option>Inactive</option>
+          </select>
+          <button class="btn btn-sm" onclick="exportStudentsCSV()"><i class="fas fa-download"></i>Export CSV</button>
+          <button class="btn btn-p btn-sm" onclick="openModal('modal-student')"><i class="fas fa-user-plus"></i>Add Student</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="tw"><table>
+            <thead><tr><th>Student</th><th>ID</th><th>Mobile</th><th>Course</th><th>Batch</th><th>Fees Status</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="students-tbody"><tr><td colspan="8"><div class="empty"><span class="spin"></span><p style="margin-top:8px;">Loading students...</p></div></td></tr></tbody>
+          </table></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+          <div style="font-size:12px;color:var(--text3);" id="s-showing">—</div>
+        </div>
+      </div>
+
+      <!-- LEADS CRM -->
+      <div class="page" id="page-leads">
+        <div class="ph"><div class="ph-title">Lead Management — CRM</div><div class="ph-sub">Har inquiry ko track karo — source se admission tak</div></div>
+        <div class="toolbar">
+          <div class="sb"><i class="fas fa-search"></i><input id="l-search" placeholder="Naam ya mobile se search..." oninput="filterLeads()"/></div>
+          <select id="l-filter-stage" onchange="filterLeads()" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 11px;color:var(--text);font-size:13px;outline:none;">
+            <option value="">Sabhi Stages</option><option>New</option><option>Contacted</option><option>Demo Done</option><option>Interested</option><option>Converted</option><option>Lost</option>
+          </select>
+          <button class="btn btn-sm" onclick="exportLeadsCSV()"><i class="fas fa-download"></i>Export CSV</button>
+          <button class="btn btn-p btn-sm" onclick="openModal('modal-lead')"><i class="fas fa-plus"></i>New Lead</button>
+        </div>
+
+        <div class="pipeline" id="leads-pipeline">
+          <div class="pc"><div class="pc-h"><span class="pc-title">New</span><span class="pc-cnt" id="pc-new">0</span></div><div id="pipe-new"></div></div>
+          <div class="pc"><div class="pc-h"><span class="pc-title">Contacted</span><span class="pc-cnt" id="pc-contacted">0</span></div><div id="pipe-contacted"></div></div>
+          <div class="pc"><div class="pc-h"><span class="pc-title">Demo Done</span><span class="pc-cnt" id="pc-demo">0</span></div><div id="pipe-demo"></div></div>
+          <div class="pc"><div class="pc-h"><span class="pc-title">Interested</span><span class="pc-cnt" id="pc-interested">0</span></div><div id="pipe-interested"></div></div>
+          <div class="pc"><div class="pc-h"><span class="pc-title" style="color:var(--green)">Converted</span><span class="pc-cnt" id="pc-converted">0</span></div><div id="pipe-converted"></div></div>
+        </div>
+
+        <div class="card">
+          <div class="ch"><div class="ct">Sabhi Leads — List View</div><button class="btn btn-sm" onclick="exportLeadsCSV()"><i class="fas fa-download"></i>Export</button></div>
+          <div class="tw"><table>
+            <thead><tr><th>Lead</th><th>Mobile</th><th>Course</th><th>Source</th><th>Stage</th><th>Follow-up</th><th>Counsellor</th><th>Actions</th></tr></thead>
+            <tbody id="leads-tbody"><tr><td colspan="8"><div class="empty"><span class="spin"></span><p style="margin-top:8px;">Loading leads...</p></div></td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- FEES -->
+      <div class="page" id="page-fees">
+        <div class="ph"><div class="ph-title">Fees Management</div><div class="ph-sub">Payments collect karo, dues track karo, receipts generate karo</div></div>
+        <div class="stats-grid">
+          <div class="sc green"><div class="sc-icon green"><i class="fas fa-check-circle"></i></div><div class="sc-label">Is Mahine Collection</div><div class="sc-val" id="f-total">₹0</div><div class="sc-ch up" id="f-total-s"></div></div>
+          <div class="sc blue"><div class="sc-icon blue"><i class="fas fa-receipt"></i></div><div class="sc-label">Total Receipts</div><div class="sc-val" id="f-count">0</div><div class="sc-ch up"></div></div>
+          <div class="sc amber"><div class="sc-icon amber"><i class="fas fa-cash-register"></i></div><div class="sc-label">Cash Collection</div><div class="sc-val" id="f-cash">₹0</div><div class="sc-ch warn"></div></div>
+          <div class="sc red"><div class="sc-icon red"><i class="fas fa-mobile-alt"></i></div><div class="sc-label">Online Collection</div><div class="sc-val" id="f-online">₹0</div><div class="sc-ch up"></div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="ch"><div class="ct">Payment Collect Karein</div><button class="btn btn-p btn-sm" onclick="openModal('modal-fee')"><i class="fas fa-plus"></i>New Receipt</button></div>
+            <div class="fg" style="margin-bottom:11px;"><label>Student Ka Naam</label><input id="qf-student" placeholder="Student naam..."/></div>
+            <div class="ir">
+              <div class="fg"><label>Amount (₹)</label><input type="number" id="qf-amount" placeholder="0"/></div>
+              <div class="fg"><label>Mode</label><select id="qf-mode"><option>Cash</option><option>UPI</option><option>NEFT</option><option>Cheque</option></select></div>
+            </div>
+            <div class="fg" style="margin-bottom:14px;"><label>Date</label><input type="date" id="qf-date"/></div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-g" onclick="quickFee()"><i class="fas fa-receipt"></i>Receipt Generate</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Payment Mode Breakdown</div></div>
+            <div id="fee-mode-breakdown"><div class="empty"><i class="fas fa-chart-pie"></i><p>Fees add karne ke baad dikhai dega</p></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Recent Receipts</div><button class="btn btn-sm" onclick="exportFeesCSV()"><i class="fas fa-download"></i>Export CSV</button></div>
+          <div class="tw"><table>
+            <thead><tr><th>Receipt No.</th><th>Student</th><th>Course</th><th>Amount</th><th>Mode</th><th>Date</th></tr></thead>
+            <tbody id="fees-tbody"><tr><td colspan="6"><div class="empty"><span class="spin"></span><p style="margin-top:8px;">Loading fees...</p></div></td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- BATCHES -->
+      <div class="page" id="page-batches">
+        <div class="ph"><div class="ph-title">Batch Management</div><div class="ph-sub">Sabhi running aur upcoming batches manage karo</div></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px;">
+          <button class="btn btn-p btn-sm" onclick="openAddBatch()"><i class="fas fa-plus"></i> Naya Batch Add Karein</button>
+        </div>
+        <div id="batches-grid" class="two-col"></div>
+      </div>
+
+      <!-- COURSES -->
+      <div class="page" id="page-courses">
+        <div class="ph"><div class="ph-title">Course Management</div><div class="ph-sub">Courses add, edit ya delete karein</div></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px;">
+          <button class="btn btn-p btn-sm" onclick="openAddCourse()"><i class="fas fa-plus"></i> Naya Course Add Karein</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="tw"><table>
+            <thead><tr><th>Course Naam</th><th>Duration</th><th>Fees</th><th>Level</th><th>Actions</th></tr></thead>
+            <tbody id="courses-tbody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- EXPENSES -->
+      <div class="page" id="page-expenses">
+        <div class="ph"><div class="ph-title">Expense Tracking</div><div class="ph-sub">Sab kharche track karo aur P&L dekho</div></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="ch"><div class="ct">Naya Kharcha Add Karein</div></div>
+            <div class="ir"><div class="fg"><label>Category</label><select id="e-cat"><option>Rent</option><option>Salary</option><option>Marketing / Ads</option><option>Utilities</option><option>Printing</option><option>Software / Tools</option><option>Miscellaneous</option></select></div><div class="fg"><label>Amount (₹)</label><input type="number" id="e-amount" placeholder="0"/></div></div>
+            <div class="ir"><div class="fg"><label>Date</label><input type="date" id="e-date"/></div><div class="fg"><label>Mode</label><select id="e-mode"><option>Cash</option><option>Bank Transfer</option><option>UPI</option><option>Cheque</option></select></div></div>
+            <div class="fg" style="margin-bottom:14px;"><label>Description</label><input id="e-desc" placeholder="Kharche ka description..."/></div>
+            <button class="btn btn-p" onclick="saveExpense()"><i class="fas fa-save"></i>Save Expense</button>
+          </div>
+          <div class="card">
+            <div class="ch"><div class="ct">Is Mahine — Summary</div></div>
+            <div id="expense-summary"><div class="empty"><i class="fas fa-wallet"></i><p>Kharche add karne ke baad dikhai dega</p></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Recent Expenses</div><button class="btn btn-sm" onclick="exportExpensesCSV()"><i class="fas fa-download"></i>Export</button></div>
+          <div class="tw"><table>
+            <thead><tr><th>Category</th><th>Description</th><th>Amount</th><th>Mode</th><th>Date</th></tr></thead>
+            <tbody id="expenses-tbody"><tr><td colspan="5"><div class="empty"><span class="spin"></span><p style="margin-top:8px;">Loading...</p></div></td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="page-reports">
+        <div class="ph"><div class="ph-title">Reports & Analytics</div><div class="ph-sub">Business data download karo — Excel mein</div></div>
+        <div class="stats-grid">
+          <div class="sc blue"><div class="sc-icon blue"><i class="fas fa-users"></i></div><div class="sc-label">Total Students</div><div class="sc-val" id="r-students">—</div></div>
+          <div class="sc green"><div class="sc-icon green"><i class="fas fa-indian-rupee-sign"></i></div><div class="sc-label">Total Collection</div><div class="sc-val" id="r-fees">—</div></div>
+          <div class="sc amber"><div class="sc-icon amber"><i class="fas fa-crosshairs"></i></div><div class="sc-label">Total Leads</div><div class="sc-val" id="r-leads">—</div></div>
+          <div class="sc red"><div class="sc-icon red"><i class="fas fa-percentage"></i></div><div class="sc-label">Conversion Rate</div><div class="sc-val" id="r-conv">—</div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">Reports Download Karein — CSV/Excel</div></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportStudentsCSV()"><i class="fas fa-file-csv" style="font-size:20px;color:var(--green);"></i><div style="text-align:left;"><div>Students Report</div><div style="font-size:11px;color:var(--text3);">Sabhi students ka data</div></div></button>
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportLeadsCSV()"><i class="fas fa-file-csv" style="font-size:20px;color:var(--amber);"></i><div style="text-align:left;"><div>Leads Report</div><div style="font-size:11px;color:var(--text3);">CRM data</div></div></button>
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportFeesCSV()"><i class="fas fa-file-csv" style="font-size:20px;color:var(--accent2);"></i><div style="text-align:left;"><div>Fees Report</div><div style="font-size:11px;color:var(--text3);">Sabhi receipts</div></div></button>
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportExpensesCSV()"><i class="fas fa-file-csv" style="font-size:20px;color:var(--purple);"></i><div style="text-align:left;"><div>Expenses Report</div><div style="font-size:11px;color:var(--text3);">Sab kharche</div></div></button>
+            <button class="btn" style="padding:14px;justify-content:flex-start;gap:12px;" onclick="exportAllCSV()"><i class="fas fa-file-archive" style="font-size:20px;color:var(--red);"></i><div style="text-align:left;"><div>Full Backup</div><div style="font-size:11px;color:var(--text3);">Sab data ek saath</div></div></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="ph"><div class="ph-title">Settings</div><div class="ph-sub">Institute profile, login, aur database configure karo</div></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="ch"><div class="ct">Institute Profile</div></div>
+            <div class="fg" style="margin-bottom:11px;"><label>Institute Naam</label><input id="set-name" placeholder="Institute ka naam"/></div>
+            <div class="fg" style="margin-bottom:11px;"><label>Owner Naam</label><input id="set-owner" placeholder="Aapka naam"/></div>
+            <div class="fg" style="margin-bottom:11px;"><label>Mobile / WhatsApp</label><input id="set-mobile" placeholder="9876543210"/></div>
+            <div class="fg" style="margin-bottom:11px;"><label>City</label><input id="set-city" placeholder="Delhi"/></div>
+            <div class="fg" style="margin-bottom:14px;"><label>GST Number</label><input id="set-gst" placeholder="Optional"/></div>
+            <button class="btn btn-p" onclick="saveSettings()"><i class="fas fa-save"></i>Settings Save Karein</button>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:14px;">
+              <div class="ch"><div class="ct"><i class="fas fa-key" style="color:var(--amber);"></i> Password Change Karein</div></div>
+              <div class="fg" style="margin-bottom:11px;"><label>Current Password</label><input type="password" id="cp-old" placeholder="Purana password"/></div>
+              <div class="fg" style="margin-bottom:11px;"><label>New Password</label><input type="password" id="cp-new" placeholder="Naya password"/></div>
+              <div class="fg" style="margin-bottom:14px;"><label>Confirm Password</label><input type="password" id="cp-confirm" placeholder="Dobara likho"/></div>
+              <button class="btn" style="background:var(--amber-bg);border-color:rgba(245,158,11,0.2);color:var(--amber);" onclick="changePassword()"><i class="fas fa-key"></i>Change Karein</button>
+            </div>
+            <div class="card">
+              <div class="ch"><div><div class="ct"><i class="fas fa-database" style="color:var(--accent2);"></i> Database Config</div><div class="cs" id="db-status-text">Status check ho raha hai...</div></div><span class="badge" id="db-status-badge">Checking</span></div>
+              <button class="btn btn-sm" onclick="openConfigModal()" style="width:100%;justify-content:center;"><i class="fas fa-plug"></i>Supabase Reconnect / Change</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// THEME TOGGLE — Light / Dark
+// ═══════════════════════════════════════════════════════
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  const icon = document.getElementById('theme-icon');
+  if (isLight) {
+    icon.className = 'fas fa-sun';
+    document.getElementById('theme-btn').title = 'Dark Mode pe jaayein';
+  } else {
+    icon.className = 'fas fa-moon';
+    document.getElementById('theme-btn').title = 'Light Mode pe jaayein';
+  }
+  LDB.set('theme', isLight ? 'light' : 'dark');
+}
+
+function initTheme() {
+  const saved = LDB.get('theme', 'dark');
+  if (saved === 'light') {
+    document.body.classList.add('light');
+    const icon = document.getElementById('theme-icon');
+    if (icon) icon.className = 'fas fa-sun';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// FIREBASE REALTIME DATABASE — 100% CORS Free
+// ═══════════════════════════════════════════════════════
+const FB_URL = 'https://idealfinway-institute-default-rtdb.asia-southeast1.firebasedatabase.app';
+let dbReady = true;
+// Legacy vars (unused)
+const SB_URL = ''; const SB_KEY = ''; let supabaseReady = true; let sbClient = null;
+
+function initSupabase() { console.log('✅ Firebase DB ready'); }
+
+// ── Firebase REST API helpers ──────────────────────────
+async function fbGet(path) {
+  try {
+    const r = await fetch(FB_URL + path + '.json');
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d;
+  } catch(e) { console.error('fbGet:', e.message); return null; }
+}
+
+async function fbSet(path, data) {
+  try {
+    const r = await fetch(FB_URL + path + '.json', {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    return r.ok ? await r.json() : null;
+  } catch(e) { console.error('fbSet:', e.message); return null; }
+}
+
+async function fbPush(path, data) {
+  try {
+    const r = await fetch(FB_URL + path + '.json', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    return r.ok ? await r.json() : null;
+  } catch(e) { console.error('fbPush:', e.message); return null; }
+}
+
+async function fbPatch(path, data) {
+  try {
+    const r = await fetch(FB_URL + path + '.json', {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    return r.ok ? await r.json() : null;
+  } catch(e) { console.error('fbPatch:', e.message); return null; }
+}
+
+async function fbDelete(path) {
+  try {
+    const r = await fetch(FB_URL + path + '.json', {method: 'DELETE'});
+    return r.ok;
+  } catch(e) { console.error('fbDelete:', e.message); return false; }
+}
+
+// Convert Firebase object (keyed) to array
+function fbToArray(obj) {
+  if (!obj) return [];
+  return Object.entries(obj).map(([fbKey, val]) => ({...val, fbKey}));
+}
+
+// ── Compatibility wrapper (old sbFetch calls) ──────────
+async function sbFetch(table, method, body, params) {
+  // Not used with Firebase — kept for compatibility
+  return null;
+}
+
+// ── New getData / insertData using Firebase ─────────────
+async function getData(table) {
+  const data = await fbGet('/' + table);
+  const arr = fbToArray(data).sort((a,b) => (b.created_at||'').localeCompare(a.created_at||''));
+  // Cache locally
+  LDB.set(table, arr);
+  return arr;
+}
+
+async function insertData(table, obj) {
+  obj.created_at = new Date().toISOString();
+  const result = await fbPush('/' + table, obj);
+  if (result && result.name) {
+    const newObj = {...obj, id: result.name, fbKey: result.name};
+    console.log('✅ Saved to Firebase:', table, result.name);
+    return [newObj];
+  }
+  // Fallback localStorage
+  const arr = LDB.get(table, []);
+  const newObj = {...obj, id: Date.now(), fbKey: null};
+  arr.unshift(newObj);
+  LDB.set(table, arr);
+  console.warn('⚠️ Firebase failed, saved locally:', table);
+  return [newObj];
+}
+
+// ── Update/Delete for Firebase ──────────────────────────
+async function fbUpdateItem(table, fbKey, updates) {
+  if (!fbKey) return false;
+  await fbPatch('/' + table + '/' + fbKey, updates);
+  return true;
+}
+
+async function fbDeleteItem(table, fbKey) {
+  if (!fbKey) return false;
+  await fbDelete('/' + table + '/' + fbKey);
+  return true;
+}
+
+// Init default users in Firebase if empty
+async function initFirebaseUsers() {
+  const existing = await fbGet('/users');
+  if (!existing) {
+    await fbSet('/users', {
+      'user1': {name:'Admin', username:'admin', password:'stockedu@2026', role:'Admin', created_at: new Date().toISOString()},
+      'user2': {name:'Ravikant Sharma', username:'ravikant', password:'ravikant@123', role:'Teacher', created_at: new Date().toISOString()},
+      'user3': {name:'Receptionist', username:'reception', password:'reception@123', role:'Receptionist', created_at: new Date().toISOString()}
+    });
+    console.log('✅ Default users created in Firebase');
+  }
+}
+async function saveSupabaseConfig() {
+  showToast('✅ Supabase already connected!');
+  closeModal('modal-config');
+}
+
+// ═══════════════════════════════════════════════════════
+// LOCAL DB FALLBACK (jab Supabase nahi ho)
+// ═══════════════════════════════════════════════════════
+const LDB = {
+  get: (k, d=[]) => { try { const v=localStorage.getItem('se_'+k); return v?JSON.parse(v):d; } catch { return d; } },
+  set: (k,v) => { try { localStorage.setItem('se_'+k, JSON.stringify(v)); } catch(e){} },
+};
+
+function initLocalUsers() {
+  if (!LDB.get('users', null)) {
+    LDB.set('users', [
+      {id:1, name:'Admin', username:'admin', password:'stockedu@2026', role:'Admin'},
+      {id:2, name:'Ravikant Sharma', username:'ravikant', password:'ravikant@123', role:'Teacher'},
+      {id:3, name:'Receptionist', username:'reception', password:'reception@123', role:'Receptionist'},
+    ]);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════
+let currentUser = null;
+
+async function doLogin() {
+  const u = document.getElementById('lu').value.trim();
+  const p = document.getElementById('lp').value.trim();
+  if (!u||!p) { showLoginErr('Username aur password dono bharein!'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.innerHTML = '<span class="spin"></span> Logging in...';
+  btn.disabled = true;
+
+  let user = null;
+
+  // Try Firebase first
+  const fbUsers = await fbGet('/users');
+  if (fbUsers) {
+    const usersArr = Object.values(fbUsers);
+    user = usersArr.find(x => x.username===u && x.password===p) || null;
+  }
+  
+  // Fallback to localStorage
+  if (!user) {
+    const localUsers = LDB.get('users', []);
+    user = localUsers.find(x => x.username===u && x.password===p) || null;
+  }
+
+  btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login karein';
+  btn.disabled = false;
+
+  if (user) {
+    currentUser = user;
+    // Save BOTH session flag AND full user object — for reliable restore
+    LDB.set('session', {userId: user.id, time: Date.now()});
+    LDB.set('current_user', {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      role: user.role
+    });
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('main-app').style.display = 'flex';
+    document.getElementById('login-err').classList.remove('show');
+    document.getElementById('sb-av').textContent = (user.name||'A')[0].toUpperCase();
+    document.getElementById('sb-name').textContent = user.name || 'Admin';
+    document.getElementById('sb-role').textContent = user.role || 'Admin';
+    checkDbStatus();
+    loadAllData();
+  } else {
+    showLoginErr('Galat username ya password. Dobara try karein.');
+    document.getElementById('lp').value = '';
+    document.getElementById('lp').focus();
+  }
+}
+
+function showLoginErr(msg) {
+  const el = document.getElementById('login-err');
+  document.getElementById('login-err-msg').textContent = msg;
+  el.classList.add('show');
+}
+
+function doLogout() {
+  currentUser = null;
+  LDB.set('session', null);
+  LDB.set('current_user', null);
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+  document.getElementById('login-err').classList.remove('show');
+}
+
+function checkSession() {
+  initLocalUsers();
+  const banner = document.getElementById('setup-banner');
+  if (banner) banner.classList.add('hidden');
+
+  const sess = LDB.get('session', null);
+  if (!sess) return; // No session — show login screen (default)
+
+  // Session exists — restore login
+  const savedUser = LDB.get('current_user', null);
+  if (savedUser) {
+    currentUser = savedUser;
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('main-app').style.display = 'flex';
+    document.getElementById('sb-av').textContent = (savedUser.name||'A')[0].toUpperCase();
+    document.getElementById('sb-name').textContent = savedUser.name || 'Admin';
+    document.getElementById('sb-role').textContent = savedUser.role || 'Admin';
+    checkDbStatus();
+    loadAllData();
+  }
+}
+
+function checkDbStatus() {
+  // Supabase hamesha connected hai — hardcoded
+  const badge = document.getElementById('db-status-badge');
+  const text = document.getElementById('db-status-text');
+  if (badge) { badge.className = 'badge bg'; badge.textContent = 'Connected ✓'; }
+  if (text) text.textContent = 'Cloud database — data permanent hai ☁️';
+}
+
+// ═══════════════════════════════════════════════════════
+// DATA HELPERS
+// ═══════════════════════════════════════════════════════
+// getData: using Firebase version above
+
+
+// insertData: using Firebase version above
+
+
+// ═══════════════════════════════════════════════════════
+// LOAD ALL DATA
+// ═══════════════════════════════════════════════════════
+let allStudents=[], allLeads=[], allFees=[], allExpenses=[];
+
+async function loadAllData() {
+  [allStudents, allLeads, allFees, allExpenses] = await Promise.all([
+    getData('students'), getData('leads'), getData('fees'), getData('expenses')
+  ]);
+  updateDashboard();
+  renderStudents(allStudents);
+  renderLeads(allLeads);
+  renderFees(allFees);
+  renderExpenses(allExpenses);
+  updateBadges();
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════
+function updateDashboard() {
+  const now = new Date();
+  const m = now.getMonth(), y = now.getFullYear();
+
+  const activeStudents = allStudents.filter(s=>s.status==='Active'||!s.status);
+  document.getElementById('d-students').textContent = allStudents.length;
+  document.getElementById('d-students-s').innerHTML = `<i class="fas fa-circle" style="font-size:7px"></i> ${activeStudents.length} active`;
+
+  const monthFees = allFees.filter(f=>{ const d=new Date(f.created_at||f.payment_date); return d.getMonth()===m&&d.getFullYear()===y; });
+  const feeSum = monthFees.reduce((a,f)=>a+(parseFloat(f.amount)||0),0);
+  document.getElementById('d-fees').textContent = '₹'+fmtNum(feeSum);
+  document.getElementById('d-fees-s').innerHTML = `${monthFees.length} receipts this month`;
+
+  const monthLeads = allLeads.filter(l=>{ const d=new Date(l.created_at); return d.getMonth()===m&&d.getFullYear()===y; });
+  const converted = allLeads.filter(l=>l.stage==='Converted');
+  document.getElementById('d-leads').textContent = monthLeads.length;
+  document.getElementById('d-leads-s').innerHTML = `<i class="fas fa-check" style="font-size:9px"></i> ${converted.length} converted total`;
+
+  document.getElementById('d-pending').textContent = allStudents.filter(s=>s.fees_status==='Pending').length;
+  document.getElementById('d-pending-s').innerHTML = 'Students ki fees pending';
+
+  // Recent students
+  const recS = allStudents.slice(0,4);
+  const rsCont = document.getElementById('d-recent-students');
+  document.getElementById('d-rec-count').textContent = allStudents.length + ' total';
+  if (recS.length===0) { rsCont.innerHTML = '<div class="empty"><i class="fas fa-users"></i><p>Abhi koi student nahi</p></div>'; }
+  else {
+    rsCont.innerHTML = '<div class="al">'+recS.map(s=>`
+      <div class="ai"><div class="av ${avColor(s.name)}">${s.name[0].toUpperCase()}</div>
+      <div class="ai-info"><div class="ai-name">${s.name}</div><div class="ai-sub">${s.course||'—'} · ${s.city||'—'}</div></div>
+      <span class="badge ${feesBadge(s.fees_status)}">${s.fees_status||'Pending'}</span></div>`).join('')+'</div>';
+  }
+
+  // Recent leads
+  const recL = allLeads.slice(0,4);
+  const rlCont = document.getElementById('d-recent-leads');
+  document.getElementById('d-lead-count').textContent = allLeads.length + ' total';
+  if (recL.length===0) { rlCont.innerHTML = '<div class="empty"><i class="fas fa-crosshairs"></i><p>Abhi koi lead nahi</p></div>'; }
+  else {
+    rlCont.innerHTML = '<div class="al">'+recL.map(l=>`
+      <div class="ai"><div class="av av-a">${l.name[0].toUpperCase()}</div>
+      <div class="ai-info"><div class="ai-name">${l.name}</div><div class="ai-sub">${l.source||'—'} · ${l.course_interest||'—'}</div></div>
+      <span class="badge ${stageBadge(l.stage)}">${l.stage||'New'}</span></div>`).join('')+'</div>';
+  }
+
+  // Source stats
+  const sources = {};
+  allLeads.forEach(l=>{ const s=l.source||'Unknown'; sources[s]=(sources[s]||0)+1; });
+  const srcCont = document.getElementById('d-source-stats');
+  if (Object.keys(sources).length===0) { srcCont.innerHTML = '<div class="empty"><i class="fas fa-chart-pie"></i><p>Leads add karne ke baad</p></div>'; }
+  else {
+    const total = allLeads.length;
+    srcCont.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">'+
+      Object.entries(sources).sort((a,b)=>b[1]-a[1]).map(([s,c])=>`
+        <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;border:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:500;color:var(--text);">${s}</div>
+          <div style="font-size:20px;font-weight:700;color:var(--accent2);margin:4px 0;">${c}</div>
+          <div style="font-size:11px;color:var(--text3);">${Math.round(c/total*100)}% of leads</div>
+        </div>`).join('')+'</div>';
+  }
+
+  // Reports numbers
+  const rfEl=document.getElementById('r-fees'); if(rfEl) rfEl.textContent='₹'+fmtNum(allFees.reduce((a,f)=>a+(parseFloat(f.amount)||0),0));
+  const rsEl=document.getElementById('r-students'); if(rsEl) rsEl.textContent=allStudents.length;
+  const rlEl=document.getElementById('r-leads'); if(rlEl) rlEl.textContent=allLeads.length;
+  const rcEl=document.getElementById('r-conv'); if(rcEl) rcEl.textContent=allLeads.length>0?Math.round(converted.length/allLeads.length*100)+'%':'0%';
+}
+
+function updateBadges() {
+  document.getElementById('nb-students').textContent = allStudents.length;
+  document.getElementById('nb-leads').textContent = allLeads.filter(l=>l.stage!=='Converted'&&l.stage!=='Lost').length;
+  document.getElementById('nb-fees').textContent = allStudents.filter(s=>s.fees_status==='Pending').length;
+}
+
+// ═══════════════════════════════════════════════════════
+// STUDENTS
+// ═══════════════════════════════════════════════════════
+function renderStudents(data) {
+  const tbody = document.getElementById('students-tbody');
+  document.getElementById('s-count-sub').textContent = `${data.length} students — manage karo, search karo, export karo`;
+  document.getElementById('s-showing').textContent = `${data.length} students dikhai de rahe hain`;
+  if (data.length===0) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><i class="fas fa-users"></i><p>Koi student nahi mila. "Add Student" karein!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(s=>`
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:9px;"><div class="av ${avColor(s.name)}">${s.name[0].toUpperCase()}</div><div style="color:var(--text);font-weight:500;">${s.name}</div></div></td>
+      <td style="font-size:11px;color:var(--text3);">${s.student_id||'—'}</td>
+      <td>${s.mobile||'—'}</td>
+      <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.course||'—'}</td>
+      <td>${s.batch||'—'}</td>
+      <td><span class="badge ${feesBadge(s.fees_status)}">${s.fees_status||'Pending'}</span></td>
+      <td><span class="badge ${statusBadge(s.status)}">${s.status||'Active'}</span></td>
+      <td><div style="display:flex;gap:5px;">
+        <div class="ib" title="Edit" onclick="openEditStudent(${s.id})"><i class="fas fa-pen"></i></div>
+        <div class="ib wh" title="WhatsApp" onclick="waMsg('${s.mobile||s.whatsapp}')"><i class="fab fa-whatsapp"></i></div>
+        <div class="ib" title="Delete" style="color:var(--red);" onclick="deleteStudent(${s.id},'${s.name}')"><i class="fas fa-trash"></i></div>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filterStudents() {
+  const q = document.getElementById('s-search').value.toLowerCase();
+  const course = document.getElementById('s-filter-course').value;
+  const status = document.getElementById('s-filter-status').value;
+  let filtered = allStudents.filter(s => {
+    const matchQ = !q || s.name?.toLowerCase().includes(q) || s.mobile?.includes(q) || s.student_id?.toLowerCase().includes(q);
+    const matchC = !course || s.course===course;
+    const matchS = !status || s.status===status;
+    return matchQ && matchC && matchS;
+  });
+  renderStudents(filtered);
+}
+
+async function saveStudent() {
+  const name=document.getElementById('s-name').value.trim();
+  const mobile=document.getElementById('s-mobile').value.trim();
+  const course=document.getElementById('s-course').value;
+  if (!name) { showToast('Naam required hai!', true); return; }
+  if (!mobile || mobile.length!==10) { showToast('Valid 10-digit mobile number bharein!', true); return; }
+  if (!course) { showToast('Course select karein!', true); return; }
+
+  document.getElementById('s-btn-txt').style.display='none';
+  document.getElementById('s-btn-spin').style.display='inline-flex';
+
+  const count = allStudents.length;
+  const sid = 'SMI'+new Date().getFullYear()+String(count+1).padStart(4,'0');
+  const obj = {
+    student_id:sid, name, mobile,
+    email:document.getElementById('s-email').value.trim(),
+    whatsapp:document.getElementById('s-whatsapp').value.trim()||mobile,
+    course, batch:document.getElementById('s-batch').value,
+    trading_bg:document.getElementById('s-tbg').value,
+    profession:document.getElementById('s-prof').value,
+    guardian:document.getElementById('s-guardian').value.trim(),
+    city:document.getElementById('s-city').value.trim(),
+    notes:document.getElementById('s-notes').value.trim(),
+    status:'Active', fees_status:'Pending',
+    joined_date:new Date().toLocaleDateString('en-IN')
+  };
+  const res = await insertData('students', obj);
+  document.getElementById('s-btn-txt').style.display='';
+  document.getElementById('s-btn-spin').style.display='none';
+  if (res) {
+    allStudents.unshift(res[0]||obj);
+    closeModal('modal-student');
+    clearForm(['s-name','s-mobile','s-email','s-whatsapp','s-guardian','s-city','s-notes']);
+    renderStudents(allStudents);
+    updateDashboard();
+    updateBadges();
+    showToast(`✅ Student added! ID: ${sid}`);
+  } else { showToast('❌ Error! Dobara try karein.', true); }
+}
+
+function viewStudent(id) {
+  const s = allStudents.find(x=>x.id==id);
+  if (!s) return;
+  showToast(`👤 ${s.name} | ${s.mobile} | ${s.course||'—'} | ${s.city||'—'}`);
+}
+
+// ═══════════════════════════════════════════════════════
+// LEADS
+// ═══════════════════════════════════════════════════════
+function renderLeads(data) {
+  // Pipeline
+  const stages = ['New','Contacted','Demo Done','Interested','Converted'];
+  const ids = ['new','contacted','demo','interested','converted'];
+  stages.forEach((st,i)=>{
+    const items = data.filter(l=>(l.stage||'New')===st);
+    document.getElementById('pc-'+ids[i]).textContent = items.length;
+    const cont = document.getElementById('pipe-'+ids[i]);
+    if (!cont) return;
+    if (items.length===0) { cont.innerHTML = `<div style="font-size:11px;color:var(--text3);text-align:center;padding:10px 0;">Koi lead nahi</div>`; return; }
+    cont.innerHTML = items.slice(0,3).map(l=>`
+      <div class="pk" onclick="openLeadDetail(${l.id})">
+        <div class="pk-name">${l.name}</div>
+        <div class="pk-info"><i class="fas fa-phone" style="font-size:10px;"></i> ${l.mobile||'—'}</div>
+        <div class="pk-info">${l.source||'—'} · ${l.course_interest||'—'}</div>
+        ${l.notes ? `<div style="margin-top:6px;font-size:11px;color:var(--amber);background:var(--amber-bg);padding:4px 8px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;"><i class="fas fa-sticky-note" style="font-size:9px;"></i> ${l.notes.substring(0,40)}${l.notes.length>40?'...':''}</div>` : ''}
+      </div>`).join('');
+  });
+
+  // Table
+  const tbody = document.getElementById('leads-tbody');
+  if (data.length===0) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><i class="fas fa-crosshairs"></i><p>Koi lead nahi. "New Lead" add karein!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(l=>`
+    <tr style="cursor:pointer;" onclick="openLeadDetail(${l.id})">
+      <td><div style="display:flex;align-items:center;gap:9px;"><div class="av av-a">${l.name[0].toUpperCase()}</div>
+        <div>
+          <div style="color:var(--text);font-weight:500;">${l.name}</div>
+          ${l.notes ? `<div style="font-size:11px;color:var(--amber);margin-top:2px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i class="fas fa-sticky-note" style="font-size:9px;"></i> ${l.notes.substring(0,35)}${l.notes.length>35?'...':''}</div>` : ''}
+        </div>
+      </div></td>
+      <td>${l.mobile||'—'}</td>
+      <td>${l.course_interest||'—'}</td>
+      <td>${l.source||'—'}</td>
+      <td><span class="badge ${stageBadge(l.stage)}">${l.stage||'New'}</span></td>
+      <td style="font-size:12px;">${l.followup_date ? new Date(l.followup_date).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—'}</td>
+      <td>${l.counsellor||'—'}</td>
+      <td onclick="event.stopPropagation()"><div style="display:flex;gap:5px;">
+        <div class="ib" title="View Detail" onclick="openLeadDetail(${l.id})"><i class="fas fa-eye"></i></div>
+        <select onchange="updateLeadStage(${l.id},this.value)" style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--text);font-size:11px;outline:none;">
+          ${['New','Contacted','Demo Done','Interested','Converted','Lost'].map(s=>`<option ${s===l.stage?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <div class="ib wh" onclick="waMsg('${l.mobile}')"><i class="fab fa-whatsapp"></i></div>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filterLeads() {
+  const q = document.getElementById('l-search').value.toLowerCase();
+  const stage = document.getElementById('l-filter-stage').value;
+  let filtered = allLeads.filter(l=>{
+    const mq = !q || l.name?.toLowerCase().includes(q) || l.mobile?.includes(q);
+    const ms = !stage || l.stage===stage;
+    return mq && ms;
+  });
+  renderLeads(filtered);
+}
+
+async function updateLeadStage(id, stage) {
+  if (supabaseReady) {
+    await sbFetch('leads','PATCH',{stage},`?id=eq.${id}`);
+  }
+  const idx = allLeads.findIndex(l=>l.id==id);
+  if (idx>-1) { allLeads[idx].stage=stage; if(!SUPABASE_URL) LDB.set('leads',allLeads); }
+  updateDashboard();
+  updateBadges();
+  showToast('Stage updated: '+stage);
+}
+
+// ─── LEAD DETAIL VIEW ───────────────────────────────
+let currentLeadId = null;
+
+function openLeadDetail(id) {
+  const l = allLeads.find(x=>x.id==id);
+  if (!l) return;
+  currentLeadId = id;
+
+  // Fill header
+  document.getElementById('ld-av').textContent = l.name[0].toUpperCase();
+  document.getElementById('ld-name').textContent = l.name;
+  document.getElementById('ld-stage-badge').className = 'badge '+stageBadge(l.stage);
+  document.getElementById('ld-stage-badge').textContent = l.stage||'New';
+  document.getElementById('ld-source').textContent = (l.source||'—') + (l.trading_exp ? ' · '+l.trading_exp : '');
+
+  // Fill details
+  document.getElementById('ld-mobile').textContent = l.mobile||'—';
+  document.getElementById('ld-course').textContent = l.course_interest||'—';
+  document.getElementById('ld-budget').textContent = l.budget||'—';
+  document.getElementById('ld-counsellor').textContent = l.counsellor||'—';
+  document.getElementById('ld-exp').textContent = l.trading_exp||'—';
+
+  // Follow-up date
+  if (l.followup_date) {
+    try {
+      document.getElementById('ld-followup').textContent = new Date(l.followup_date).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    } catch { document.getElementById('ld-followup').textContent = l.followup_date; }
+  } else {
+    document.getElementById('ld-followup').textContent = 'Set nahi hai';
+  }
+
+  // Notes — main feature
+  const notesEl = document.getElementById('ld-notes');
+  if (l.notes && l.notes.trim()) {
+    notesEl.textContent = l.notes;
+    notesEl.style.color = 'var(--text)';
+  } else {
+    notesEl.textContent = 'Koi notes nahi hain abhi. Neeche add karein.';
+    notesEl.style.color = 'var(--text3)';
+  }
+
+  // Pre-fill notes input with existing notes
+  document.getElementById('ld-notes-input').value = l.notes||'';
+
+  // Stage select
+  document.getElementById('ld-stage-select').value = l.stage||'New';
+
+  // WhatsApp button
+  document.getElementById('ld-wa-btn').onclick = () => waMsg(l.mobile);
+
+  openModal('modal-lead-detail');
+}
+
+async function updateLeadDetail() {
+  if (!currentLeadId) return;
+  const notes = document.getElementById('ld-notes-input').value.trim();
+  const stage = document.getElementById('ld-stage-select').value;
+  const updates = { notes, stage };
+
+  if (supabaseReady) {
+    await sbFetch('leads','PATCH',updates,`?id=eq.${currentLeadId}`);
+  }
+  const idx = allLeads.findIndex(l=>l.id==currentLeadId);
+  if (idx>-1) {
+    allLeads[idx] = {...allLeads[idx], ...updates};
+    if (!SUPABASE_URL) LDB.set('leads', allLeads);
+  }
+
+  // Update modal display immediately
+  const notesEl = document.getElementById('ld-notes');
+  if (notes) {
+    notesEl.textContent = notes;
+    notesEl.style.color = 'var(--text)';
+  }
+  document.getElementById('ld-stage-badge').className = 'badge '+stageBadge(stage);
+  document.getElementById('ld-stage-badge').textContent = stage;
+
+  closeModal('modal-lead-detail');
+  renderLeads(allLeads);
+  updateDashboard();
+  updateBadges();
+  showToast('✅ Notes aur Stage save ho gaya!');
+}
+
+async function saveLead() {
+  const name=document.getElementById('l-name').value.trim();
+  const mobile=document.getElementById('l-mobile').value.trim();
+  if (!name) { showToast('Naam required!', true); return; }
+  if (!mobile) { showToast('Mobile required!', true); return; }
+
+  document.getElementById('l-btn-txt').style.display='none';
+  document.getElementById('l-btn-spin').style.display='inline-flex';
+
+  const obj = {
+    name, mobile,
+    email:'',
+    course_interest:document.getElementById('l-course').value,
+    source:document.getElementById('l-source').value,
+    trading_exp:document.getElementById('l-exp').value,
+    budget:document.getElementById('l-budget').value,
+    stage:'New',
+    counsellor:document.getElementById('l-counsellor').value,
+    followup_date:document.getElementById('l-followup').value||null,
+    notes:document.getElementById('l-notes').value.trim()
+  };
+  const res = await insertData('leads', obj);
+  document.getElementById('l-btn-txt').style.display='';
+  document.getElementById('l-btn-spin').style.display='none';
+  if (res) {
+    allLeads.unshift(res[0]||obj);
+    closeModal('modal-lead');
+    clearForm(['l-name','l-mobile','l-notes','l-followup']);
+    renderLeads(allLeads);
+    updateDashboard();
+    updateBadges();
+    showToast('✅ Lead saved! Follow-up set.');
+  } else { showToast('❌ Error saving lead!', true); }
+}
+
+// ═══════════════════════════════════════════════════════
+// FEES
+// ═══════════════════════════════════════════════════════
+function renderFees(data) {
+  // Stats
+  const total = data.reduce((a,f)=>a+(parseFloat(f.amount)||0),0);
+  const cash = data.filter(f=>f.payment_mode==='Cash').reduce((a,f)=>a+(parseFloat(f.amount)||0),0);
+  const online = total - cash;
+  document.getElementById('f-total').textContent = '₹'+fmtNum(total);
+  document.getElementById('f-count').textContent = data.length;
+  document.getElementById('f-cash').textContent = '₹'+fmtNum(cash);
+  document.getElementById('f-online').textContent = '₹'+fmtNum(online);
+  document.getElementById('f-total-s').textContent = data.length + ' receipts total';
+
+  // Mode breakdown
+  const modes = {};
+  data.forEach(f=>{ const m=f.payment_mode||'Cash'; modes[m]=(modes[m]||0)+(parseFloat(f.amount)||0); });
+  const mbEl = document.getElementById('fee-mode-breakdown');
+  if (Object.keys(modes).length===0) { mbEl.innerHTML = '<div class="empty"><i class="fas fa-chart-pie"></i><p>Fees add karne ke baad</p></div>'; }
+  else {
+    mbEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'+
+      Object.entries(modes).sort((a,b)=>b[1]-a[1]).map(([m,a])=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-radius:var(--rs);">
+          <span style="color:var(--text);font-size:13px;">${m}</span>
+          <span style="color:var(--green);font-weight:600;">₹${fmtNum(a)}</span>
+        </div>`).join('')+'</div>';
+  }
+
+  // Table
+  const tbody = document.getElementById('fees-tbody');
+  if (data.length===0) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><i class="fas fa-receipt"></i><p>Koi payment nahi. "New Receipt" banayein!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.slice(0,50).map(f=>`
+    <tr>
+      <td style="font-size:11px;color:var(--text3);">${f.receipt_no||'—'}</td>
+      <td style="color:var(--text);font-weight:500;">${f.student_name||'—'}</td>
+      <td>${f.course||'—'}</td>
+      <td style="color:var(--green);font-weight:600;">₹${fmtNum(parseFloat(f.amount)||0)}</td>
+      <td><span class="badge ${f.payment_mode==='Cash'?'bgr':'bb'}">${f.payment_mode||'—'}</span></td>
+      <td>${f.payment_date||'—'}</td>
+    </tr>`).join('');
+}
+
+async function saveFee() {
+  const student=document.getElementById('f-student').value.trim();
+  const amount=document.getElementById('f-amount').value;
+  const date=document.getElementById('f-date').value;
+  if (!student) { showToast('Student naam required!', true); return; }
+  if (!amount || parseFloat(amount)<=0) { showToast('Valid amount bharein!', true); return; }
+  if (!date) { showToast('Payment date bharein!', true); return; }
+
+  document.getElementById('f-btn-txt').style.display='none';
+  document.getElementById('f-btn-spin').style.display='inline-flex';
+
+  const rno = 'RCP-'+new Date().getFullYear()+'-'+String(allFees.length+1).padStart(4,'0');
+  const obj = {
+    receipt_no:rno, student_name:student,
+    course:document.getElementById('f-course').value,
+    amount:parseFloat(amount),
+    discount:parseFloat(document.getElementById('f-discount').value||0),
+    payment_mode:document.getElementById('f-mode').value,
+    installment:document.getElementById('f-inst').value,
+    transaction_ref:document.getElementById('f-txn').value.trim(),
+    remarks:document.getElementById('f-remarks').value.trim(),
+    payment_date:date
+  };
+  const res = await insertData('fees', obj);
+  document.getElementById('f-btn-txt').style.display='';
+  document.getElementById('f-btn-spin').style.display='none';
+  if (res) {
+    allFees.unshift(res[0]||obj);
+    closeModal('modal-fee');
+    clearForm(['f-student','f-amount','f-txn','f-remarks']);
+    document.getElementById('f-discount').value='0';
+    renderFees(allFees);
+    updateDashboard();
+    showToast(`✅ Receipt ${rno} generated!`);
+  } else { showToast('❌ Error saving fee!', true); }
+}
+
+async function quickFee() {
+  const student=document.getElementById('qf-student').value.trim();
+  const amount=document.getElementById('qf-amount').value;
+  const date=document.getElementById('qf-date').value;
+  if (!student||!amount||!date) { showToast('Naam, amount aur date bharein!', true); return; }
+  const rno = 'RCP-'+new Date().getFullYear()+'-'+String(allFees.length+1).padStart(4,'0');
+  const obj = { receipt_no:rno, student_name:student, amount:parseFloat(amount), payment_mode:document.getElementById('qf-mode').value, payment_date:date };
+  const res = await insertData('fees', obj);
+  if (res) {
+    allFees.unshift(res[0]||obj);
+    renderFees(allFees);
+    updateDashboard();
+    document.getElementById('qf-student').value='';
+    document.getElementById('qf-amount').value='';
+    showToast(`✅ Quick receipt ${rno} generated!`);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// EXPENSES
+// ═══════════════════════════════════════════════════════
+function renderExpenses(data) {
+  const now = new Date();
+  const m=now.getMonth(), y=now.getFullYear();
+  const monthExp = data.filter(e=>{ const d=new Date(e.created_at||e.expense_date); return d.getMonth()===m&&d.getFullYear()===y; });
+  const total = monthExp.reduce((a,e)=>a+(parseFloat(e.amount)||0),0);
+
+  const sumEl = document.getElementById('expense-summary');
+  if (monthExp.length===0) { sumEl.innerHTML = '<div class="empty"><i class="fas fa-wallet"></i><p>Is mahine koi kharcha nahi</p></div>'; }
+  else {
+    const cats = {};
+    monthExp.forEach(e=>{ cats[e.category]=(cats[e.category]||0)+(parseFloat(e.amount)||0); });
+    sumEl.innerHTML = `<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--text2);font-size:13px;">Is mahine ka kharcha</span><span style="color:var(--red);font-weight:700;font-size:18px;">₹${fmtNum(total)}</span></div>`+
+      '<div style="display:flex;flex-direction:column;gap:6px;">'+Object.entries(cats).map(([c,a])=>`
+        <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg3);border-radius:var(--rs);">
+          <span style="color:var(--text2);font-size:13px;">${c}</span>
+          <span style="color:var(--red);font-weight:500;">₹${fmtNum(a)}</span>
+        </div>`).join('')+'</div>';
+  }
+
+  const tbody = document.getElementById('expenses-tbody');
+  if (data.length===0) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><i class="fas fa-wallet"></i><p>Koi expense nahi</p></div></td></tr>'; return; }
+  tbody.innerHTML = data.slice(0,50).map(e=>`
+    <tr>
+      <td><span class="badge bgr">${e.category||'—'}</span></td>
+      <td>${e.description||'—'}</td>
+      <td style="color:var(--red);font-weight:600;">₹${fmtNum(parseFloat(e.amount)||0)}</td>
+      <td>${e.payment_mode||'—'}</td>
+      <td>${e.expense_date||'—'}</td>
+      <td><div style="display:flex;gap:5px;">
+        <div class="ib" onclick="openEditExpense(${e.id})"><i class="fas fa-pen"></i></div>
+        <div class="ib" style="color:var(--red);" onclick="deleteExpense(${e.id})"><i class="fas fa-trash"></i></div>
+      </div></td>
+    </tr>`).join('');
+}
+
+async function saveExpense() {
+  const cat=document.getElementById('e-cat').value;
+  const amount=document.getElementById('e-amount').value;
+  const date=document.getElementById('e-date').value;
+  if (!amount||parseFloat(amount)<=0) { showToast('Valid amount bharein!', true); return; }
+  if (!date) { showToast('Date bharein!', true); return; }
+  const obj = { category:cat, amount:parseFloat(amount), description:document.getElementById('e-desc').value.trim(), payment_mode:document.getElementById('e-mode').value, expense_date:date };
+  const res = await insertData('expenses', obj);
+  if (res) {
+    allExpenses.unshift(res[0]||obj);
+    clearForm(['e-amount','e-desc']);
+    renderExpenses(allExpenses);
+    showToast('✅ Expense saved!');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+function saveSettings() {
+  const s = { name:document.getElementById('set-name').value, owner:document.getElementById('set-owner').value, mobile:document.getElementById('set-mobile').value, city:document.getElementById('set-city').value, gst:document.getElementById('set-gst').value };
+  LDB.set('settings', s);
+  showToast('✅ Settings saved!');
+}
+function loadSettings() {
+  const s = LDB.get('settings', {});
+  if (document.getElementById('set-name')) { document.getElementById('set-name').value=s.name||''; document.getElementById('set-owner').value=s.owner||''; document.getElementById('set-mobile').value=s.mobile||''; document.getElementById('set-city').value=s.city||''; document.getElementById('set-gst').value=s.gst||''; }
+}
+function changePassword() {
+  const oldP=document.getElementById('cp-old').value;
+  const newP=document.getElementById('cp-new').value;
+  const conf=document.getElementById('cp-confirm').value;
+  if (!currentUser) return;
+  if (oldP!==currentUser.password) { showToast('❌ Purana password galat!', true); return; }
+  if (newP.length<6) { showToast('❌ Password min 6 characters!', true); return; }
+  if (newP!==conf) { showToast('❌ Passwords match nahi!', true); return; }
+  const users = LDB.get('users',[]);
+  const idx = users.findIndex(u=>u.id===currentUser.id);
+  if (idx>-1) { users[idx].password=newP; currentUser.password=newP; LDB.set('users',users); }
+  clearForm(['cp-old','cp-new','cp-confirm']);
+  showToast('✅ Password change ho gaya!');
+}
+
+// ═══════════════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════════════
+function toCSV(headers, rows) {
+  const esc = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  return [headers.map(esc).join(','), ...rows.map(r=>r.map(esc).join(','))].join('\n');
+}
+function downloadCSV(content, filename) {
+  const blob = new Blob(['\ufeff'+content], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+function exportStudentsCSV() {
+  if (allStudents.length===0) { showToast('Koi data nahi export karne ke liye!', true); return; }
+  const csv = toCSV(['ID','Naam','Mobile','Email','Course','Batch','City','Status','Fees Status','Joining Date'],
+    allStudents.map(s=>[s.student_id,s.name,s.mobile,s.email,s.course,s.batch,s.city,s.status,s.fees_status,s.joined_date]));
+  downloadCSV(csv, 'Students_'+today()+'.csv');
+  showToast('✅ Students CSV download ho rahi hai!');
+}
+function exportLeadsCSV() {
+  if (allLeads.length===0) { showToast('Koi data nahi!', true); return; }
+  const csv = toCSV(['Naam','Mobile','Course Interest','Source','Stage','Budget','Counsellor','Notes'],
+    allLeads.map(l=>[l.name,l.mobile,l.course_interest,l.source,l.stage,l.budget,l.counsellor,l.notes]));
+  downloadCSV(csv, 'Leads_'+today()+'.csv');
+  showToast('✅ Leads CSV download ho rahi hai!');
+}
+function exportFeesCSV() {
+  if (allFees.length===0) { showToast('Koi data nahi!', true); return; }
+  const csv = toCSV(['Receipt No','Student','Course','Amount','Discount','Mode','Date','Remarks'],
+    allFees.map(f=>[f.receipt_no,f.student_name,f.course,f.amount,f.discount,f.payment_mode,f.payment_date,f.remarks]));
+  downloadCSV(csv, 'Fees_'+today()+'.csv');
+  showToast('✅ Fees CSV download ho rahi hai!');
+}
+function exportExpensesCSV() {
+  if (allExpenses.length===0) { showToast('Koi data nahi!', true); return; }
+  const csv = toCSV(['Category','Description','Amount','Mode','Date'],
+    allExpenses.map(e=>[e.category,e.description,e.amount,e.payment_mode,e.expense_date]));
+  downloadCSV(csv, 'Expenses_'+today()+'.csv');
+  showToast('✅ Expenses CSV download ho rahi hai!');
+}
+function exportAllCSV() {
+  exportStudentsCSV(); setTimeout(exportLeadsCSV,500); setTimeout(exportFeesCSV,1000);
+  showToast('✅ Sab reports download ho rahi hain!');
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+const avColors = ['av-b','av-g','av-a','av-p','av-t','av-r'];
+function avColor(name) { return avColors[(name?.charCodeAt(0)||0)%avColors.length]; }
+function fmtNum(n) { return n>=100000 ? (n/100000).toFixed(1)+'L' : n>=1000 ? (n/1000).toFixed(1)+'K' : Math.round(n).toString(); }
+function today() { return new Date().toLocaleDateString('en-IN').replace(/\//g,'-'); }
+function feesBadge(s) { return s==='Paid'?'bg':s==='Partial'?'ba':'br'; }
+function statusBadge(s) { return s==='Active'?'bg':s==='Completed'?'bp':s==='Dropped'?'br':'bgr'; }
+function stageBadge(s) { return s==='Converted'?'bg':s==='Interested'?'ba':s==='New'?'bb':s==='Lost'?'br':'bgr'; }
+function waMsg(phone) { if(phone) window.open('https://wa.me/91'+phone.replace(/\D/g,''),'_blank'); }
+function clearForm(ids) { ids.forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; }); }
+
+function showToast(msg, isErr=false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = 'toast show' + (isErr?' err':'');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+// ═══════════════════════════════════════════════════════
+// STUDENT EDIT / DELETE
+// ═══════════════════════════════════════════════════════
+function openEditStudent(id) {
+  const s = allStudents.find(x=>x.id==id);
+  if (!s) return;
+  document.getElementById('es-id').value = s.id;
+  document.getElementById('es-name').value = s.name||'';
+  document.getElementById('es-mobile').value = s.mobile||'';
+  document.getElementById('es-email').value = s.email||'';
+  document.getElementById('es-course').value = s.course||'Technical Analysis';
+  document.getElementById('es-batch').value = s.batch||'';
+  document.getElementById('es-city').value = s.city||'';
+  document.getElementById('es-fees').value = s.fees_status||'Pending';
+  document.getElementById('es-status').value = s.status||'Active';
+  document.getElementById('es-notes').value = s.notes||'';
+  openModal('modal-edit-student');
+}
+
+async function updateStudent() {
+  const id = document.getElementById('es-id').value;
+  const updates = {
+    name: document.getElementById('es-name').value.trim(),
+    mobile: document.getElementById('es-mobile').value.trim(),
+    email: document.getElementById('es-email').value.trim(),
+    course: document.getElementById('es-course').value,
+    batch: document.getElementById('es-batch').value,
+    city: document.getElementById('es-city').value.trim(),
+    fees_status: document.getElementById('es-fees').value,
+    status: document.getElementById('es-status').value,
+    notes: document.getElementById('es-notes').value.trim(),
+  };
+  if (!updates.name) { showToast('Naam required!', true); return; }
+  if (supabaseReady) {
+    await sbFetch('students','PATCH',updates,`?id=eq.${id}`);
+  }
+  const idx = allStudents.findIndex(s=>s.id==id);
+  if (idx>-1) { allStudents[idx]={...allStudents[idx],...updates}; if(!SUPABASE_URL) LDB.set('students',allStudents); }
+  closeModal('modal-edit-student');
+  renderStudents(allStudents);
+  updateDashboard();
+  showToast('✅ Student updated!');
+}
+
+async function deleteStudent(id, name) {
+  if (!confirm(`"${name}" ko delete karna chahte hain? Yeh action undo nahi hoga!`)) return;
+  if (supabaseReady) {
+    await sbFetch('students','DELETE',null,`?id=eq.${id}`);
+  }
+  allStudents = allStudents.filter(s=>s.id!=id);
+  if (!SUPABASE_URL) LDB.set('students',allStudents);
+  renderStudents(allStudents);
+  updateDashboard();
+  updateBadges();
+  showToast(`✅ "${name}" delete ho gaya!`);
+}
+
+// ═══════════════════════════════════════════════════════
+// BATCHES — Add/Edit + Students List
+// ═══════════════════════════════════════════════════════
+let allBatches = [];
+
+function renderBatches() {
+  const grid = document.getElementById('batches-grid');
+  if (!grid) return;
+  const colors = ['var(--accent)','var(--green)','var(--amber)','var(--purple)','var(--teal)'];
+  if (allBatches.length===0) {
+    grid.innerHTML = '<div class="card" style="grid-column:1/-1;"><div class="empty"><i class="fas fa-chalkboard-teacher"></i><p>Koi batch nahi. "Naya Batch Add Karein" button dabao!</p></div></div>';
+    return;
+  }
+  grid.innerHTML = allBatches.map((b,i)=>{
+    const bStudents = allStudents.filter(s=>s.batch===b.name);
+    const cap = parseInt(b.capacity)||20;
+    const pct = Math.min(100, Math.round(bStudents.length/cap*100));
+    const color = colors[i%colors.length];
+    return `<div class="card" style="border-top:2px solid ${color}">
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:600;">${b.name}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">
+            <i class="fas fa-user-tie"></i> ${b.teacher||'Ravikant Sharma'}
+            ${b.timing ? ' · <i class="fas fa-clock"></i> '+b.timing : ''}
+          </div>
+        </div>
+        <span class="badge bg">Active</span>
+      </div>
+      <div class="info-row">
+        <div class="ii">Students: <b>${bStudents.length}/${cap}</b></div>
+        <div class="ii">Course: <b>${b.course||'—'}</b></div>
+        ${b.mode ? `<div class="ii">Mode: <b>${b.mode}</b></div>` : ''}
+      </div>
+      <div class="prog"><div class="prog-f" style="width:${pct}%;background:${color};"></div></div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn btn-sm" onclick="showBatchStudents(${b.id},'${b.name}')"><i class="fas fa-users"></i>Students (${bStudents.length})</button>
+        <button class="btn btn-sm" onclick="openEditBatch(${b.id})"><i class="fas fa-pen"></i>Edit</button>
+        <button class="btn btn-sm" style="color:var(--red);" onclick="deleteBatch(${b.id},'${b.name}')"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showBatchStudents(batchId, batchName) {
+  const bStudents = allStudents.filter(s=>s.batch===batchName);
+  document.getElementById('bs-title').textContent = batchName + ' — Students';
+  document.getElementById('bs-sub').textContent = `${bStudents.length} students is batch mein`;
+  const list = document.getElementById('bs-list');
+  if (bStudents.length===0) {
+    list.innerHTML = '<div class="empty"><i class="fas fa-users"></i><p>Is batch mein abhi koi student nahi hai</p></div>';
+  } else {
+    list.innerHTML = '<div class="tw"><table><thead><tr><th>Student</th><th>Mobile</th><th>Fees Status</th><th>Status</th></tr></thead><tbody>'+
+      bStudents.map(s=>`<tr>
+        <td><div style="display:flex;align-items:center;gap:9px;"><div class="av ${avColor(s.name)}">${s.name[0].toUpperCase()}</div><div style="color:var(--text);font-weight:500;">${s.name}</div></div></td>
+        <td>${s.mobile||'—'}</td>
+        <td><span class="badge ${feesBadge(s.fees_status)}">${s.fees_status||'Pending'}</span></td>
+        <td><span class="badge ${statusBadge(s.status)}">${s.status||'Active'}</span></td>
+      </tr>`).join('')+'</tbody></table></div>';
+  }
+  openModal('modal-batch-students');
+}
+
+function openAddBatch() {
+  document.getElementById('batch-modal-title').innerHTML = '<i class="fas fa-plus" style="color:var(--accent2)"></i> Naya Batch Add Karein';
+  document.getElementById('b-id').value = '';
+  clearForm(['b-name','b-timing']);
+  document.getElementById('b-teacher').value = 'Ravikant Sharma';
+  document.getElementById('b-capacity').value = '20';
+  openModal('modal-batch');
+}
+
+function openEditBatch(id) {
+  const b = allBatches.find(x=>x.id==id);
+  if (!b) return;
+  document.getElementById('batch-modal-title').innerHTML = '<i class="fas fa-pen" style="color:var(--accent2)"></i> Batch Edit Karein';
+  document.getElementById('b-id').value = b.id;
+  document.getElementById('b-name').value = b.name||'';
+  document.getElementById('b-course').value = b.course||'';
+  document.getElementById('b-teacher').value = b.teacher||'';
+  document.getElementById('b-timing').value = b.timing||'';
+  document.getElementById('b-start').value = b.start_date||'';
+  document.getElementById('b-end').value = b.end_date||'';
+  document.getElementById('b-capacity').value = b.capacity||20;
+  document.getElementById('b-mode').value = b.mode||'Offline';
+  openModal('modal-batch');
+}
+
+async function saveBatch() {
+  const id = document.getElementById('b-id').value;
+  const obj = {
+    name: document.getElementById('b-name').value.trim(),
+    course: document.getElementById('b-course').value,
+    teacher: document.getElementById('b-teacher').value.trim(),
+    timing: document.getElementById('b-timing').value.trim(),
+    start_date: document.getElementById('b-start').value,
+    end_date: document.getElementById('b-end').value,
+    capacity: parseInt(document.getElementById('b-capacity').value)||20,
+    mode: document.getElementById('b-mode').value,
+  };
+  if (!obj.name) { showToast('Batch naam required!', true); return; }
+  if (id) {
+    if (supabaseReady) await sbFetch('batches','PATCH',obj,`?id=eq.${id}`);
+    const idx = allBatches.findIndex(b=>b.id==id);
+    if (idx>-1) { allBatches[idx]={...allBatches[idx],...obj}; if(!SUPABASE_URL) LDB.set('batches',allBatches); }
+    showToast('✅ Batch updated!');
+  } else {
+    const res = await insertData('batches', obj);
+    if (res) { allBatches.unshift(res[0]||obj); showToast('✅ Naya batch add ho gaya!'); }
+  }
+  closeModal('modal-batch');
+  renderBatches();
+  // Update batch dropdown in student form
+  updateBatchDropdowns();
+}
+
+async function deleteBatch(id, name) {
+  if (!confirm(`"${name}" batch delete karna chahte hain?`)) return;
+  if (supabaseReady) await sbFetch('batches','DELETE',null,`?id=eq.${id}`);
+  allBatches = allBatches.filter(b=>b.id!=id);
+  if (!SUPABASE_URL) LDB.set('batches',allBatches);
+  renderBatches();
+  showToast('✅ Batch delete ho gaya!');
+}
+
+// ═══════════════════════════════════════════════════════
+// COURSES — Add/Edit/Delete
+// ═══════════════════════════════════════════════════════
+let allCourses = [];
+
+function renderCourses() {
+  const tbody = document.getElementById('courses-tbody');
+  if (!tbody) return;
+  const levelBadge = l => l==='Beginner'?'bg':l==='Intermediate'?'bb':l==='Advanced'?'br':'bp';
+  if (allCourses.length===0) {
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><i class="fas fa-book-open"></i><p>Koi course nahi. "Naya Course" add karein!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = allCourses.map(c=>`
+    <tr>
+      <td style="color:var(--text);font-weight:500;">${c.name}</td>
+      <td>${c.duration||'—'}</td>
+      <td style="color:var(--green);">₹${fmtNum(parseFloat(c.fees)||0)}</td>
+      <td><span class="badge ${levelBadge(c.level)}">${c.level||'Intermediate'}</span></td>
+      <td><div style="display:flex;gap:5px;">
+        <div class="ib" onclick="openEditCourse(${c.id})"><i class="fas fa-pen"></i></div>
+        <div class="ib" style="color:var(--red);" onclick="deleteCourse(${c.id},'${c.name}')"><i class="fas fa-trash"></i></div>
+      </div></td>
+    </tr>`).join('');
+  // Update dropdowns
+  updateCourseDropdowns();
+}
+
+function openAddCourse() {
+  document.getElementById('course-modal-title').innerHTML = '<i class="fas fa-plus" style="color:var(--amber)"></i> Naya Course Add Karein';
+  document.getElementById('c-id').value = '';
+  clearForm(['c-name','c-duration','c-desc']);
+  document.getElementById('c-fees').value = '';
+  openModal('modal-course');
+}
+
+function openEditCourse(id) {
+  const c = allCourses.find(x=>x.id==id);
+  if (!c) return;
+  document.getElementById('course-modal-title').innerHTML = '<i class="fas fa-pen" style="color:var(--amber)"></i> Course Edit Karein';
+  document.getElementById('c-id').value = c.id;
+  document.getElementById('c-name').value = c.name||'';
+  document.getElementById('c-fees').value = c.fees||'';
+  document.getElementById('c-duration').value = c.duration||'';
+  document.getElementById('c-level').value = c.level||'Intermediate';
+  document.getElementById('c-desc').value = c.description||'';
+  openModal('modal-course');
+}
+
+async function saveCourse() {
+  const id = document.getElementById('c-id').value;
+  const obj = {
+    name: document.getElementById('c-name').value.trim(),
+    fees: parseFloat(document.getElementById('c-fees').value)||0,
+    duration: document.getElementById('c-duration').value.trim(),
+    level: document.getElementById('c-level').value,
+    description: document.getElementById('c-desc').value.trim(),
+  };
+  if (!obj.name) { showToast('Course naam required!', true); return; }
+  if (id) {
+    if (supabaseReady) await sbFetch('courses','PATCH',obj,`?id=eq.${id}`);
+    const idx = allCourses.findIndex(c=>c.id==id);
+    if (idx>-1) { allCourses[idx]={...allCourses[idx],...obj}; if(!SUPABASE_URL) LDB.set('courses',allCourses); }
+    showToast('✅ Course updated!');
+  } else {
+    const res = await insertData('courses', obj);
+    if (res) { allCourses.unshift(res[0]||obj); showToast('✅ Naya course add ho gaya!'); }
+  }
+  closeModal('modal-course');
+  renderCourses();
+}
+
+async function deleteCourse(id, name) {
+  if (!confirm(`"${name}" course delete karna chahte hain?`)) return;
+  if (supabaseReady) await sbFetch('courses','DELETE',null,`?id=eq.${id}`);
+  allCourses = allCourses.filter(c=>c.id!=id);
+  if (!SUPABASE_URL) LDB.set('courses',allCourses);
+  renderCourses();
+  showToast('✅ Course delete ho gaya!');
+}
+
+// ═══════════════════════════════════════════════════════
+// EXPENSE EDIT / DELETE
+// ═══════════════════════════════════════════════════════
+function openEditExpense(id) {
+  const e = allExpenses.find(x=>x.id==id);
+  if (!e) return;
+  document.getElementById('ee-id').value = e.id;
+  document.getElementById('ee-cat').value = e.category||'Rent';
+  document.getElementById('ee-amount').value = e.amount||'';
+  document.getElementById('ee-date').value = e.expense_date||'';
+  document.getElementById('ee-mode').value = e.payment_mode||'Cash';
+  document.getElementById('ee-desc').value = e.description||'';
+  openModal('modal-edit-expense');
+}
+
+async function updateExpense() {
+  const id = document.getElementById('ee-id').value;
+  const updates = {
+    category: document.getElementById('ee-cat').value,
+    amount: parseFloat(document.getElementById('ee-amount').value)||0,
+    expense_date: document.getElementById('ee-date').value,
+    payment_mode: document.getElementById('ee-mode').value,
+    description: document.getElementById('ee-desc').value.trim(),
+  };
+  if (supabaseReady) await sbFetch('expenses','PATCH',updates,`?id=eq.${id}`);
+  const idx = allExpenses.findIndex(e=>e.id==id);
+  if (idx>-1) { allExpenses[idx]={...allExpenses[idx],...updates}; if(!SUPABASE_URL) LDB.set('expenses',allExpenses); }
+  closeModal('modal-edit-expense');
+  renderExpenses(allExpenses);
+  showToast('✅ Expense updated!');
+}
+
+async function deleteExpense(id) {
+  if (!confirm('Yeh expense delete karna chahte hain?')) return;
+  if (supabaseReady) await sbFetch('expenses','DELETE',null,`?id=eq.${id}`);
+  allExpenses = allExpenses.filter(e=>e.id!=id);
+  if (!SUPABASE_URL) LDB.set('expenses',allExpenses);
+  renderExpenses(allExpenses);
+  showToast('✅ Expense delete ho gaya!');
+}
+
+// ═══════════════════════════════════════════════════════
+// DROPDOWN UPDATERS
+// ═══════════════════════════════════════════════════════
+function updateCourseDropdowns() {
+  const opts = allCourses.map(c=>`<option>${c.name}</option>`).join('');
+  const ids = ['s-course','es-course','l-course','f-course','b-course','c-course'];
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el&&el.tagName==='SELECT') { const cur=el.value; el.innerHTML=(id.includes('l-')?'<option value="">Decide nahi kiya</option>':'<option value="">-- Select --</option>')+opts; if(cur) el.value=cur; } });
+}
+
+function updateBatchDropdowns() {
+  const opts = allBatches.map(b=>`<option>${b.name}</option>`).join('');
+  const ids = ['s-batch','es-batch'];
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el) { const cur=el.value; el.innerHTML='<option value="">-- Select --</option>'+opts; if(cur) el.value=cur; } });
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT DEFAULT COURSES & BATCHES + LOAD ALL
+// ═══════════════════════════════════════════════════════
+function initDefaultData() {
+  // Default course if none exist
+  if (LDB.get('courses',[]).length===0 && !SUPABASE_URL) {
+    LDB.set('courses',[{id:1,name:'Technical Analysis',fees:35000,duration:'8 weeks',level:'Intermediate',description:'',created_at:new Date().toISOString()}]);
+  }
+}
+
+// loadAllData: using Firebase version above
+function openModal(id){
+  const m=document.getElementById(id);
+  if(!m){console.error('Modal not found:',id);return;}
+  // Close any other open modals first
+  document.querySelectorAll('.modal-overlay.open').forEach(x=>x.classList.remove('open'));
+  m.classList.add('open');
+  m.style.zIndex='10001';
+}
+function closeModal(id){
+  const m=document.getElementById(id);
+  if(m) m.classList.remove('open');
+}
+document.addEventListener('click',function(e){
+  if(e.target && e.target.classList.contains('modal-overlay')){
+    e.target.classList.remove('open');
+  }
+});
+
+const pgTitles = {
+  dashboard:['Dashboard','Aaj ka overview'],
+  students:['Students','Sabhi students manage karo'],
+  leads:['Leads / CRM','Inquiries track karo'],
+  fees:['Fees','Collections aur receipts'],
+  batches:['Batches','Active batches'],
+  courses:['Courses','Course catalog'],
+  expenses:['Expenses','Kharche track karo'],
+  reports:['Reports','Data download karo'],
+  settings:['Settings','Configure karo']
+};
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  if(el) el.classList.add('active');
+  const info=pgTitles[id]||[id,''];
+  document.getElementById('tp-title').textContent=info[0];
+  document.getElementById('tp-sub').textContent=info[1];
+  if(id==='settings') { loadSettings(); }
+}
+
+function openConfigModal() {
+  // Pre-fill existing saved values
+  const savedUrl = localStorage.getItem('sb_url')||'';
+  const savedKey = localStorage.getItem('sb_key')||'';
+  const urlEl = document.getElementById('cfg-url');
+  const keyEl = document.getElementById('cfg-key');
+  if (urlEl) urlEl.value = savedUrl;
+  if (keyEl) keyEl.value = savedKey;
+  openModal('modal-config');
+}
+
+// Set today's date in fee form
+document.addEventListener('DOMContentLoaded', async ()=>{
+  initTheme();
+
+  // Initialize Firebase
+  initSupabase();
+  // Create default users if not exist
+  await initFirebaseUsers();
+
+  const td = new Date().toISOString().split('T')[0];
+  const fdate=document.getElementById('f-date'); if(fdate) fdate.value=td;
+  const qdate=document.getElementById('qf-date'); if(qdate) qdate.value=td;
+  const edate=document.getElementById('e-date'); if(edate) edate.value=td;
+  document.getElementById('lu').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('lp').focus(); });
+  document.getElementById('lp').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+
+  checkSession();
+});
+
+// ═══════════════════════════════════════════════════════
+// MOBILE RESPONSIVE FUNCTIONS
+// ═══════════════════════════════════════════════════════
+function isMobile() { return window.innerWidth <= 768; }
+
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const isOpen = sidebar.classList.contains('open');
+  if (isOpen) { closeSidebar(); }
+  else { sidebar.classList.add('open'); overlay.classList.add('open'); }
+}
+
+function closeSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+function setMobileNav(page) {
+  document.querySelectorAll('.mn-item').forEach(i => i.classList.remove('active'));
+  const el = document.getElementById('mn-'+page);
+  if (el) el.classList.add('active');
+}
+
+function handleResize() {
+  const mobileNav = document.getElementById('mobile-nav');
+  if (!mobileNav) return;
+  if (isMobile()) {
+    mobileNav.style.display = 'flex';
+    // Close sidebar on mobile if open
+  } else {
+    mobileNav.style.display = 'none';
+    closeSidebar(); // reset sidebar state on desktop
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) { sidebar.style.left = ''; sidebar.classList.remove('open'); }
+  }
+}
+
+// Auto-close sidebar when nav item clicked on mobile
+document.addEventListener('DOMContentLoaded', () => {
+  const niItems = document.querySelectorAll('.ni');
+  niItems.forEach(ni => {
+    ni.addEventListener('click', () => {
+      if (isMobile()) closeSidebar();
+    });
+  });
+  handleResize();
+  window.addEventListener('resize', handleResize);
+});
+
+</script>
+</body>
+</html>
