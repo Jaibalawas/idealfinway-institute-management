@@ -63,6 +63,9 @@ body.light .fg input,body.light .fg select,body.light .fg textarea,body.light .s
 
 /* LOGIN */
 #login-screen{position:fixed;inset:0;z-index:9998;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+/* Always start with login visible, app hidden */
+.app{display:none!important;}
+.app.visible{display:flex!important;}
 #login-screen.hidden{display:none;}
 .login-box{width:100%;max-width:420px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px 36px;text-align:center;}
 .login-logo{width:56px;height:56px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;}
@@ -767,7 +770,7 @@ create policy "allow all" on expenses for all using(true) with check(true);
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg"></span></div>
 
 <!-- APP -->
-<div class="app" id="main-app" style="display:none;">
+<div class="app" id="main-app">
   <!-- Mobile sidebar overlay -->
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
   
@@ -1220,7 +1223,8 @@ async function doLogin() {
       role: user.role
     });
     document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('main-app').style.display = 'flex';
+    document.getElementById('main-app').style.display = '';
+    document.getElementById('main-app').classList.add('visible');
     document.getElementById('login-err').classList.remove('show');
     document.getElementById('sb-av').textContent = (user.name||'A')[0].toUpperCase();
     document.getElementById('sb-name').textContent = user.name || 'Admin';
@@ -1246,6 +1250,7 @@ function doLogout() {
   LDB.set('current_user', null);
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('main-app').style.display = 'none';
+  document.getElementById('main-app').classList.remove('visible');
   document.getElementById('lu').value = '';
   document.getElementById('lp').value = '';
   document.getElementById('login-err').classList.remove('show');
