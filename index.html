@@ -564,6 +564,75 @@ create policy "allow all" on expenses for all using(true) with check(true);
   </div>
 </div>
 
+<!-- LEAD DETAIL / NOTES MODAL -->
+<div class="modal-overlay" id="modal-lead-detail">
+  <div class="modal" style="max-width:620px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+      <div class="av av-a" id="ld-av" style="width:44px;height:44px;font-size:16px;">R</div>
+      <div>
+        <div class="modal-title" id="ld-name" style="margin-bottom:2px;">Lead Name</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="badge" id="ld-stage-badge">New</span>
+          <span style="font-size:12px;color:var(--text3);" id="ld-source">—</span>
+        </div>
+      </div>
+      <div class="ib wh" id="ld-wa-btn" style="margin-left:auto;width:36px;height:36px;" title="WhatsApp"><i class="fab fa-whatsapp"></i></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;">
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Mobile</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-mobile">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Course Interest</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-course">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Budget</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-budget">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Follow-up</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-followup">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Counsellor</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-counsellor">—</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Trading Experience</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text);" id="ld-exp">—</div>
+      </div>
+    </div>
+
+    <!-- NOTES SECTION -->
+    <div style="background:var(--amber-bg);border:1px solid rgba(245,158,11,0.25);border-radius:var(--rs);padding:14px;margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:8px;"><i class="fas fa-sticky-note"></i> Notes / Remarks</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.7;white-space:pre-wrap;min-height:40px;" id="ld-notes">Koi notes nahi hain.</div>
+    </div>
+
+    <!-- ADD/UPDATE NOTE -->
+    <div style="margin-bottom:4px;">
+      <div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;"><i class="fas fa-edit"></i> Note Update Karein</div>
+      <textarea id="ld-notes-input" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:10px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;resize:none;height:80px;outline:none;" placeholder="Naya note ya update likho... (call hua, kya baat hui, next action kya hai)"></textarea>
+    </div>
+
+    <!-- STAGE UPDATE -->
+    <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+      <div style="font-size:12px;color:var(--text2);font-weight:500;">Stage:</div>
+      <select id="ld-stage-select" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:7px 10px;color:var(--text);font-size:13px;outline:none;flex:1;">
+        <option>New</option><option>Contacted</option><option>Demo Done</option><option>Interested</option><option>Converted</option><option>Lost</option>
+      </select>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-lead-detail')">Close</button>
+      <button class="btn btn-p" onclick="updateLeadDetail()"><i class="fas fa-save"></i> Save Notes & Stage</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg"></span></div>
 
@@ -1292,10 +1361,11 @@ function renderLeads(data) {
     if (!cont) return;
     if (items.length===0) { cont.innerHTML = `<div style="font-size:11px;color:var(--text3);text-align:center;padding:10px 0;">Koi lead nahi</div>`; return; }
     cont.innerHTML = items.slice(0,3).map(l=>`
-      <div class="pk">
+      <div class="pk" onclick="openLeadDetail(${l.id})">
         <div class="pk-name">${l.name}</div>
         <div class="pk-info"><i class="fas fa-phone" style="font-size:10px;"></i> ${l.mobile||'—'}</div>
         <div class="pk-info">${l.source||'—'} · ${l.course_interest||'—'}</div>
+        ${l.notes ? `<div style="margin-top:6px;font-size:11px;color:var(--amber);background:var(--amber-bg);padding:4px 8px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;"><i class="fas fa-sticky-note" style="font-size:9px;"></i> ${l.notes.substring(0,40)}${l.notes.length>40?'...':''}</div>` : ''}
       </div>`).join('');
   });
 
@@ -1306,15 +1376,21 @@ function renderLeads(data) {
     return;
   }
   tbody.innerHTML = data.map(l=>`
-    <tr>
-      <td><div style="display:flex;align-items:center;gap:9px;"><div class="av av-a">${l.name[0].toUpperCase()}</div><div style="color:var(--text);font-weight:500;">${l.name}</div></div></td>
+    <tr style="cursor:pointer;" onclick="openLeadDetail(${l.id})">
+      <td><div style="display:flex;align-items:center;gap:9px;"><div class="av av-a">${l.name[0].toUpperCase()}</div>
+        <div>
+          <div style="color:var(--text);font-weight:500;">${l.name}</div>
+          ${l.notes ? `<div style="font-size:11px;color:var(--amber);margin-top:2px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i class="fas fa-sticky-note" style="font-size:9px;"></i> ${l.notes.substring(0,35)}${l.notes.length>35?'...':''}</div>` : ''}
+        </div>
+      </div></td>
       <td>${l.mobile||'—'}</td>
       <td>${l.course_interest||'—'}</td>
       <td>${l.source||'—'}</td>
       <td><span class="badge ${stageBadge(l.stage)}">${l.stage||'New'}</span></td>
       <td style="font-size:12px;">${l.followup_date ? new Date(l.followup_date).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—'}</td>
       <td>${l.counsellor||'—'}</td>
-      <td><div style="display:flex;gap:5px;">
+      <td onclick="event.stopPropagation()"><div style="display:flex;gap:5px;">
+        <div class="ib" title="View Detail" onclick="openLeadDetail(${l.id})"><i class="fas fa-eye"></i></div>
         <select onchange="updateLeadStage(${l.id},this.value)" style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--text);font-size:11px;outline:none;">
           ${['New','Contacted','Demo Done','Interested','Converted','Lost'].map(s=>`<option ${s===l.stage?'selected':''}>${s}</option>`).join('')}
         </select>
@@ -1343,6 +1419,90 @@ async function updateLeadStage(id, stage) {
   updateDashboard();
   updateBadges();
   showToast('Stage updated: '+stage);
+}
+
+// ─── LEAD DETAIL VIEW ───────────────────────────────
+let currentLeadId = null;
+
+function openLeadDetail(id) {
+  const l = allLeads.find(x=>x.id==id);
+  if (!l) return;
+  currentLeadId = id;
+
+  // Fill header
+  document.getElementById('ld-av').textContent = l.name[0].toUpperCase();
+  document.getElementById('ld-name').textContent = l.name;
+  document.getElementById('ld-stage-badge').className = 'badge '+stageBadge(l.stage);
+  document.getElementById('ld-stage-badge').textContent = l.stage||'New';
+  document.getElementById('ld-source').textContent = (l.source||'—') + (l.trading_exp ? ' · '+l.trading_exp : '');
+
+  // Fill details
+  document.getElementById('ld-mobile').textContent = l.mobile||'—';
+  document.getElementById('ld-course').textContent = l.course_interest||'—';
+  document.getElementById('ld-budget').textContent = l.budget||'—';
+  document.getElementById('ld-counsellor').textContent = l.counsellor||'—';
+  document.getElementById('ld-exp').textContent = l.trading_exp||'—';
+
+  // Follow-up date
+  if (l.followup_date) {
+    try {
+      document.getElementById('ld-followup').textContent = new Date(l.followup_date).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    } catch { document.getElementById('ld-followup').textContent = l.followup_date; }
+  } else {
+    document.getElementById('ld-followup').textContent = 'Set nahi hai';
+  }
+
+  // Notes — main feature
+  const notesEl = document.getElementById('ld-notes');
+  if (l.notes && l.notes.trim()) {
+    notesEl.textContent = l.notes;
+    notesEl.style.color = 'var(--text)';
+  } else {
+    notesEl.textContent = 'Koi notes nahi hain abhi. Neeche add karein.';
+    notesEl.style.color = 'var(--text3)';
+  }
+
+  // Pre-fill notes input with existing notes
+  document.getElementById('ld-notes-input').value = l.notes||'';
+
+  // Stage select
+  document.getElementById('ld-stage-select').value = l.stage||'New';
+
+  // WhatsApp button
+  document.getElementById('ld-wa-btn').onclick = () => waMsg(l.mobile);
+
+  openModal('modal-lead-detail');
+}
+
+async function updateLeadDetail() {
+  if (!currentLeadId) return;
+  const notes = document.getElementById('ld-notes-input').value.trim();
+  const stage = document.getElementById('ld-stage-select').value;
+  const updates = { notes, stage };
+
+  if (SUPABASE_URL && SUPABASE_KEY) {
+    await sbFetch('leads','PATCH',updates,`?id=eq.${currentLeadId}`);
+  }
+  const idx = allLeads.findIndex(l=>l.id==currentLeadId);
+  if (idx>-1) {
+    allLeads[idx] = {...allLeads[idx], ...updates};
+    if (!SUPABASE_URL) LDB.set('leads', allLeads);
+  }
+
+  // Update modal display immediately
+  const notesEl = document.getElementById('ld-notes');
+  if (notes) {
+    notesEl.textContent = notes;
+    notesEl.style.color = 'var(--text)';
+  }
+  document.getElementById('ld-stage-badge').className = 'badge '+stageBadge(stage);
+  document.getElementById('ld-stage-badge').textContent = stage;
+
+  closeModal('modal-lead-detail');
+  renderLeads(allLeads);
+  updateDashboard();
+  updateBadges();
+  showToast('✅ Notes aur Stage save ho gaya!');
 }
 
 async function saveLead() {
